@@ -22,6 +22,7 @@ export function SkillNode({ skill }: SkillNodeProps) {
     toggleSkill(skill.id);
   };
 
+  // アンロック時のティアカラー（明るめ）
   const tierColors: Record<number, string> = {
     1: 'bg-gray-500',
     2: 'bg-blue-500',
@@ -30,12 +31,30 @@ export function SkillNode({ skill }: SkillNodeProps) {
     5: 'bg-red-500',
   };
 
+  // ロック時のティアカラー（暗め）
+  const tierColorsLocked: Record<number, string> = {
+    1: 'bg-gray-700',
+    2: 'bg-blue-900',
+    3: 'bg-purple-900',
+    4: 'bg-amber-900',
+    5: 'bg-red-900',
+  };
+
   const tierBorderColors: Record<number, string> = {
     1: 'border-gray-500',
     2: 'border-blue-500',
     3: 'border-purple-500',
     4: 'border-amber-500',
     5: 'border-red-500',
+  };
+
+  // ロック時のボーダーカラー（暗め）
+  const tierBorderColorsLocked: Record<number, string> = {
+    1: 'border-gray-700',
+    2: 'border-blue-800',
+    3: 'border-purple-800',
+    4: 'border-amber-800',
+    5: 'border-red-800',
   };
 
   return (
@@ -56,26 +75,26 @@ export function SkillNode({ skill }: SkillNodeProps) {
           border-3 transition-all duration-300
           ${isUnlocked
             ? 'bg-[#16213e] border-green-500'
-            : `bg-[#1a1a2e] ${tierBorderColors[skill.tier]}`
+            : `bg-[#0d0d1a] ${tierBorderColorsLocked[skill.tier]}`
           }
           ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#0f0f23]' : ''}
-          ${isUnlocked ? 'shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''}
-          hover:scale-110
+          ${isUnlocked ? 'shadow-[0_0_20px_rgba(34,197,94,0.5)]' : 'opacity-60'}
+          hover:scale-110 hover:opacity-100
         `}
         style={{ borderWidth: '3px' }}
       >
         {/* Inner circle decoration */}
         <div
           className={`
-            absolute inset-2 rounded-full border opacity-50
-            ${isUnlocked ? 'border-green-500' : tierBorderColors[skill.tier]}
+            absolute inset-2 rounded-full border
+            ${isUnlocked ? 'border-green-500 opacity-50' : `${tierBorderColorsLocked[skill.tier]} opacity-30`}
           `}
         />
 
         {/* Skill initial */}
         <span
           className={`text-xl font-bold z-10 ${
-            isUnlocked ? 'text-green-400' : 'text-gray-400'
+            isUnlocked ? 'text-green-400' : 'text-gray-600'
           }`}
         >
           {skill.name.charAt(0)}
@@ -83,7 +102,7 @@ export function SkillNode({ skill }: SkillNodeProps) {
 
         {/* Tier badge */}
         <div
-          className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white ${tierColors[skill.tier]}`}
+          className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white ${isUnlocked ? tierColors[skill.tier] : tierColorsLocked[skill.tier]}`}
         >
           {skill.tier}
         </div>
@@ -92,7 +111,7 @@ export function SkillNode({ skill }: SkillNodeProps) {
       {/* Skill name */}
       <span
         className={`mt-2 text-xs text-center max-w-20 truncate ${
-          isUnlocked ? 'text-gray-200' : 'text-gray-500'
+          isUnlocked ? 'text-gray-200' : 'text-gray-600'
         }`}
       >
         {skill.name}
@@ -101,7 +120,7 @@ export function SkillNode({ skill }: SkillNodeProps) {
       {/* Point badge */}
       <span
         className={`mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-          isUnlocked ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300'
+          isUnlocked ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-500'
         }`}
       >
         +{skill.pointValue}pt
