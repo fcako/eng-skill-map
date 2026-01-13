@@ -1,16 +1,21 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
 import { SKILLS } from '@/data/skills';
 
 export function PointsDisplay() {
-  const { unlockedSkills, getTotalPoints, getCategoryLevel, activeCategory } =
-    useSkillTreeStore();
+  const [mounted, setMounted] = useState(false);
+  const { unlockedSkills, getTotalPoints } = useSkillTreeStore();
 
-  const totalPoints = getTotalPoints();
-  const currentLevel = getCategoryLevel(activeCategory);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const totalPoints = mounted ? getTotalPoints() : 0;
+  const overallLevel = Math.floor(totalPoints / 50) + 1;
   const totalSkills = SKILLS.length;
-  const unlockedCount = unlockedSkills.length;
+  const unlockedCount = mounted ? unlockedSkills.length : 0;
 
   // Calculate max possible points
   const maxPoints = SKILLS.reduce((sum, skill) => sum + skill.pointValue, 0);
@@ -24,7 +29,7 @@ export function PointsDisplay() {
           U
         </div>
         <div className="absolute -bottom-1 -right-1 bg-amber-500 text-xs font-bold px-2 py-0.5 rounded-full text-black">
-          Lv.{currentLevel}
+          Lv.{overallLevel}
         </div>
       </div>
 

@@ -2,8 +2,8 @@
 
 import { SkillTreeCanvas } from './SkillTreeCanvas';
 import { SkillDetailPanel } from './SkillDetailPanel';
-import { CategoryTabs } from './CategoryTabs';
 import { PointsDisplay } from './PointsDisplay';
+import { CategoryLegend } from './CategoryLegend';
 
 export function SkillTreeContainer() {
   return (
@@ -21,7 +21,7 @@ export function SkillTreeContainer() {
             </svg>
             Eng Skill Map
           </h1>
-          <CategoryTabs />
+          <CategoryLegend />
         </div>
         <PointsDisplay />
       </header>

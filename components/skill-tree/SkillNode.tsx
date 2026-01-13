@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Skill } from '@/types/skill';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
 
@@ -8,17 +9,24 @@ interface SkillNodeProps {
 }
 
 export function SkillNode({ skill }: SkillNodeProps) {
+  const [mounted, setMounted] = useState(false);
   const { unlockedSkills, selectedSkillId, toggleSkill, selectSkill } =
     useSkillTreeStore();
 
-  const isUnlocked = unlockedSkills.includes(skill.id);
-  const isSelected = selectedSkillId === skill.id;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  const handleClick = () => {
+  const isUnlocked = mounted && unlockedSkills.includes(skill.id);
+  const isSelected = mounted && selectedSkillId === skill.id;
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     selectSkill(skill.id);
   };
 
-  const handleDoubleClick = () => {
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     toggleSkill(skill.id);
   };
 
@@ -57,6 +65,20 @@ export function SkillNode({ skill }: SkillNodeProps) {
     5: 'border-red-800',
   };
 
+  // カテゴリカラー（ロック時のボーダー）
+  const categoryBorderColors: Record<string, string> = {
+    frontend: 'border-blue-600',
+    backend: 'border-purple-600',
+    infrastructure: 'border-orange-600',
+  };
+
+  // カテゴリカラー（暗め）
+  const categoryBorderColorsLocked: Record<string, string> = {
+    frontend: 'border-blue-900',
+    backend: 'border-purple-900',
+    infrastructure: 'border-orange-900',
+  };
+
   return (
     <div
       className="absolute flex flex-col items-center cursor-pointer select-none"
@@ -75,10 +97,10 @@ export function SkillNode({ skill }: SkillNodeProps) {
           border-3 transition-all duration-300
           ${isUnlocked
             ? 'bg-[#16213e] border-green-500'
-            : `bg-[#0d0d1a] ${tierBorderColorsLocked[skill.tier]}`
+            : `bg-[#0d0d1a] ${categoryBorderColorsLocked[skill.category]}`
           }
-          ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#0f0f23]' : ''}
-          ${isUnlocked ? 'shadow-[0_0_20px_rgba(34,197,94,0.5)]' : 'opacity-60'}
+          ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-[#0f0f23] scale-110' : ''}
+          ${isUnlocked ? 'shadow-[0_0_20px_rgba(34,197,94,0.5)]' : isSelected ? 'opacity-100' : 'opacity-60'}
           hover:scale-110 hover:opacity-100
         `}
         style={{ borderWidth: '3px' }}
@@ -87,7 +109,7 @@ export function SkillNode({ skill }: SkillNodeProps) {
         <div
           className={`
             absolute inset-2 rounded-full border
-            ${isUnlocked ? 'border-green-500 opacity-50' : `${tierBorderColorsLocked[skill.tier]} opacity-30`}
+            ${isUnlocked ? 'border-green-500 opacity-50' : `${categoryBorderColorsLocked[skill.category]} opacity-30`}
           `}
         />
 

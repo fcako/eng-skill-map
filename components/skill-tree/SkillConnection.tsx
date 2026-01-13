@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Skill } from '@/types/skill';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
 
@@ -9,16 +10,21 @@ interface SkillConnectionProps {
 }
 
 export function SkillConnection({ fromSkill, toSkill }: SkillConnectionProps) {
+  const [mounted, setMounted] = useState(false);
   const { unlockedSkills, selectedSkillId } = useSkillTreeStore();
 
-  const isFromUnlocked = unlockedSkills.includes(fromSkill.id);
-  const isToUnlocked = unlockedSkills.includes(toSkill.id);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isFromUnlocked = mounted && unlockedSkills.includes(fromSkill.id);
+  const isToUnlocked = mounted && unlockedSkills.includes(toSkill.id);
   const isBothUnlocked = isFromUnlocked && isToUnlocked;
 
   // 選択されたスキルへの接続（親→選択）
-  const isToSelected = selectedSkillId === toSkill.id;
+  const isToSelected = mounted && selectedSkillId === toSkill.id;
   // 選択されたスキルからの接続（選択→子）
-  const isFromSelected = selectedSkillId === fromSkill.id;
+  const isFromSelected = mounted && selectedSkillId === fromSkill.id;
   // この接続線が選択に関連しているか
   const isHighlighted = isToSelected || isFromSelected;
 
