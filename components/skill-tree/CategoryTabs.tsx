@@ -5,7 +5,7 @@ import { SkillCategory } from '@/types/skill';
 import { CATEGORY_NAMES, SKILLS } from '@/data/skills';
 
 export function CategoryTabs() {
-  const { activeCategory, setCategory, unlockedSkills } = useSkillTreeStore();
+  const { visibleCategories, toggleCategory, unlockedSkills } = useSkillTreeStore();
 
   const categories: SkillCategory[] = ['frontend', 'backend', 'infrastructure'];
 
@@ -32,14 +32,14 @@ export function CategoryTabs() {
   return (
     <div className="flex gap-2">
       {categories.map((category) => {
-        const isActive = activeCategory === category;
+        const isActive = visibleCategories.includes(category);
         const stats = getCategoryStats(category);
         const progress = stats.total > 0 ? (stats.unlocked / stats.total) * 100 : 0;
 
         return (
           <button
             key={category}
-            onClick={() => setCategory(category)}
+            onClick={() => toggleCategory(category)}
             className={`relative px-4 py-2 rounded-lg border-2 transition-all overflow-hidden ${
               isActive
                 ? `${categoryColors[category]} ${categoryBgColors[category]}`

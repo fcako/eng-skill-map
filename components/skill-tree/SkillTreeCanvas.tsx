@@ -7,13 +7,13 @@ import { getAllSkills, getSkillById, MAP_CENTER } from '@/data/skills';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
 import { Skill } from '@/types/skill';
 
-const MIN_SCALE = 0.5;
+const MIN_SCALE = 0.3;
 const MAX_SCALE = 1.5;
 const SCALE_STEP = 0.1;
 
 export function SkillTreeCanvas() {
   const baseSkills = useMemo(() => getAllSkills(), []);
-  const { selectSkill } = useSkillTreeStore();
+  const { selectSkill, visibleCategories } = useSkillTreeStore();
   const [scale, setScale] = useState(1.0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +27,17 @@ export function SkillTreeCanvas() {
       },
     }));
   }, [baseSkills, scale]);
+
+  // 表示カテゴリでフィルタ
+  const visibleSkills = useMemo(
+    () => skills.filter((s) => visibleCategories.includes(s.category)),
+    [skills, visibleCategories]
+  );
+
+  const visibleSkillIds = useMemo(
+    () => new Set(visibleSkills.map((s) => s.id)),
+    [visibleSkills]
+  );
 
   const handleCanvasClick = () => {
     selectSkill(null);
@@ -128,8 +139,8 @@ export function SkillTreeCanvas() {
     const maxY = Math.max(...ys) + padding + 80;
 
     return {
-      width: Math.max(1400, maxX, MAP_CENTER.x * 2 + padding),
-      height: Math.max(1400, maxY, MAP_CENTER.y * 2 + padding),
+      width: Math.max(1400, maxX),
+      height: Math.max(1400, maxY),
     };
   }, [skills]);
 
@@ -181,7 +192,7 @@ export function SkillTreeCanvas() {
 
       {/* 操作方法 */}
       <div className="fixed top-28 left-4 z-20 bg-gray-800/80 rounded-lg p-3 backdrop-blur-sm text-gray-400 text-xs">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <div className="flex flex-col items-center">
               <kbd className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-200 rounded text-[10px]">W</kbd>
@@ -193,12 +204,12 @@ export function SkillTreeCanvas() {
             </div>
             <span className="text-gray-500">移動</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <kbd className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-200 rounded text-[10px]">Q</kbd>
             <kbd className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-200 rounded text-[10px]">E</kbd>
             <span className="text-gray-500 ml-1">縮小/拡大</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <kbd className="w-5 h-5 flex items-center justify-center bg-gray-700 text-gray-200 rounded text-[10px]">R</kbd>
             <span className="text-gray-500 ml-1">リセット</span>
           </div>
@@ -232,6 +243,7 @@ export function SkillTreeCanvas() {
           height={canvasSize.height}
         >
           {connections.map(({ from, to }) => {
+            if (!visibleSkillIds.has(from) || !visibleSkillIds.has(to)) return null;
             const fromSkill = getScaledSkillById(from);
             const toSkill = getScaledSkillById(to);
             if (!fromSkill || !toSkill) return null;
@@ -246,7 +258,7 @@ export function SkillTreeCanvas() {
         </svg>
 
         {/* HTML nodes */}
-        {skills.map((skill) => (
+        {visibleSkills.map((skill) => (
           <SkillNode key={skill.id} skill={skill} />
         ))}
 

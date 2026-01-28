@@ -40,7 +40,7 @@ export function SkillTreeContainer() {
       {/* Footer hint */}
       <footer className="px-6 py-2 border-t border-gray-800 bg-[var(--background-secondary)] text-xs text-gray-500 flex items-center justify-between">
         <div>
-          クリック: 詳細表示 | ダブルクリック: アンロック/ロック切替
+          クリック: 詳細表示 | 修得項目をチェックしてスキルをマスター
         </div>
         <div>
           データはブラウザに保存されます

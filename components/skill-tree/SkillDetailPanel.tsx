@@ -4,19 +4,22 @@ import { useSkillTreeStore } from '@/store/skillTreeStore';
 import { getSkillById, CATEGORY_NAMES } from '@/data/skills';
 
 export function SkillDetailPanel() {
-  const { selectedSkillId, unlockedSkills, toggleSkill, selectSkill } =
-    useSkillTreeStore();
+  const {
+    selectedSkillId,
+    selectSkill,
+    toggleLearningItem,
+    isLearningItemCompleted,
+    getSkillProgress,
+  } = useSkillTreeStore();
 
   const skill = selectedSkillId ? getSkillById(selectedSkillId) : null;
-  const isUnlocked = skill ? unlockedSkills.includes(skill.id) : false;
+  const progress = skill ? getSkillProgress(skill.id) : { completed: 0, total: 0, percentage: 0 };
 
   if (!skill) {
     return (
       <div className="w-80 bg-[var(--background-secondary)] border-l border-gray-700 p-6 flex flex-col items-center justify-center text-center">
         <div className="text-gray-500 text-sm">
           スキルをクリックして詳細を表示
-          <br />
-          ダブルクリックでアンロック/ロック
         </div>
       </div>
     );
@@ -39,40 +42,45 @@ export function SkillDetailPanel() {
   };
 
   return (
-    <div className="w-80 bg-[var(--background-secondary)] border-l border-gray-700 p-6 flex flex-col">
-      {/* Close button */}
-      <button
-        onClick={() => selectSkill(null)}
-        className="self-end text-gray-500 hover:text-white mb-4"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+    <div className="w-80 bg-[var(--background-secondary)] border-l border-gray-700 flex flex-col h-full">
+      {/* Fixed header: close button + skill name */}
+      <div className="flex-shrink-0 p-6 pb-4">
+        <button
+          onClick={() => selectSkill(null)}
+          className="float-right text-gray-500 hover:text-white"
         >
-          <path
-            fillRule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
 
-      {/* Skill icon and name */}
-      <div className="flex items-center gap-4 mb-4">
-        <div
-          className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${
-            isUnlocked
-              ? 'bg-green-900/50 border-2 border-green-500 text-green-400'
-              : 'bg-gray-800 border-2 border-gray-600 text-gray-400'
-          }`}
-        >
-          {skill.name.charAt(0)}
-        </div>
-        <div>
-          <h2 className="text-xl font-bold text-white">{skill.name}</h2>
-          <div className="flex items-center gap-2 mt-1">
+        <div className="flex items-center gap-4">
+          <div
+            className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold transition-all ${
+              progress.percentage === 100
+                ? 'bg-amber-900/50 border-2 border-amber-400 text-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.4)]'
+                : progress.completed > 0
+                ? 'bg-blue-900/50 border-2 border-blue-400 text-blue-400'
+                : 'bg-gray-800 border-2 border-gray-600 text-gray-400'
+            }`}
+          >
+            {progress.percentage === 100 ? (
+              <span>&#9733;</span>
+            ) : (
+              skill.name.charAt(0)
+            )}
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-white">{skill.name}</h2>
             <span
               className={`px-2 py-0.5 rounded text-xs font-medium ${tierColors[skill.tier]} text-white`}
             >
@@ -82,49 +90,105 @@ export function SkillDetailPanel() {
         </div>
       </div>
 
-      {/* Category */}
-      <div className="mb-4">
-        <span className="text-xs text-gray-500">カテゴリ</span>
-        <div className="text-sm text-gray-300">
-          {CATEGORY_NAMES[skill.category]}
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto px-6 pb-6">
+        {/* Category */}
+        <div className="mb-4">
+          <span className="text-xs text-gray-500">カテゴリ</span>
+          <div className="text-sm text-gray-300">
+            {CATEGORY_NAMES[skill.category]}
+          </div>
         </div>
-      </div>
 
-      {/* Description */}
-      <div className="mb-6">
-        <span className="text-xs text-gray-500">説明</span>
-        <p className="text-sm text-gray-300 mt-1">{skill.description}</p>
-      </div>
-
-      {/* Point value */}
-      <div className="mb-6">
-        <span className="text-xs text-gray-500">ポイント</span>
-        <div className="text-2xl font-bold text-amber-400">
-          +{skill.pointValue} pt
+        {/* Description */}
+        <div className="mb-4">
+          <span className="text-xs text-gray-500">説明</span>
+          <p className="text-sm text-gray-300 mt-1">{skill.description}</p>
         </div>
-      </div>
 
-      {/* Status */}
-      <div className="mb-6">
-        <span className="text-xs text-gray-500">ステータス</span>
-        <div
-          className={`text-sm font-medium mt-1 ${isUnlocked ? 'text-green-400' : 'text-gray-400'}`}
-        >
-          {isUnlocked ? '習得済み' : '未習得'}
+        {/* Point value + Status */}
+        <div className="flex items-end gap-4 mb-6">
+          <div>
+            <span className="text-xs text-gray-500">獲得ポイント</span>
+            <div className="text-2xl font-bold text-amber-400">
+              {progress.completed} / {progress.total} pt
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 pb-1">
+            {progress.percentage === 100 ? (
+              <>
+                <span className="text-amber-400">&#9733;</span>
+                <span className="text-sm font-medium text-amber-400">マスター</span>
+              </>
+            ) : progress.completed > 0 ? (
+              <>
+                <span className="text-blue-400">&#9654;</span>
+                <span className="text-sm font-medium text-blue-400">進行中</span>
+              </>
+            ) : (
+              <>
+                <span className="text-gray-500">&#9711;</span>
+                <span className="text-sm font-medium text-gray-400">未着手</span>
+              </>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Toggle button */}
-      <button
-        onClick={() => toggleSkill(skill.id)}
-        className={`mt-auto py-3 px-6 rounded-lg font-medium transition-all ${
-          isUnlocked
-            ? 'bg-gray-700 hover:bg-gray-600 text-gray-300'
-            : 'bg-green-600 hover:bg-green-500 text-white'
-        }`}
-      >
-        {isUnlocked ? 'スキルをロック' : 'スキルをアンロック'}
-      </button>
+        {/* Learning Items */}
+        {skill.learningItems && skill.learningItems.length > 0 && (
+          <div>
+            {/* Checklist */}
+            <ul className="space-y-2">
+              {skill.learningItems.map((item) => {
+                const isCompleted = isLearningItemCompleted(item.id);
+                return (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => toggleLearningItem(item.id)}
+                      className={`w-full flex items-start gap-3 p-2 rounded-lg transition-all text-left ${
+                        isCompleted
+                          ? 'bg-green-900/20 hover:bg-green-900/30'
+                          : 'bg-gray-800/50 hover:bg-gray-700/50'
+                      }`}
+                    >
+                      <div
+                        className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
+                          isCompleted
+                            ? 'bg-green-500 border-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]'
+                            : 'border-gray-500 hover:border-gray-400 hover:shadow-[0_0_8px_rgba(156,163,175,0.3)]'
+                        }`}
+                      >
+                        {isCompleted && (
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={3}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <span
+                        className={`text-sm transition-colors ${
+                          isCompleted ? 'text-green-400' : 'text-gray-300'
+                        }`}
+                      >
+                        {item.content}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

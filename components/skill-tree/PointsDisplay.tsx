@@ -2,24 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
-import { SKILLS } from '@/data/skills';
 
 export function PointsDisplay() {
   const [mounted, setMounted] = useState(false);
-  const { unlockedSkills, getTotalPoints } = useSkillTreeStore();
+  const { getTotalPoints } = useSkillTreeStore();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const totalPoints = mounted ? getTotalPoints() : 0;
-  const overallLevel = Math.floor(totalPoints / 50) + 1;
-  const totalSkills = SKILLS.length;
-  const unlockedCount = mounted ? unlockedSkills.length : 0;
 
-  // Calculate max possible points
-  const maxPoints = SKILLS.reduce((sum, skill) => sum + skill.pointValue, 0);
-  const pointsProgress = maxPoints > 0 ? (totalPoints / maxPoints) * 100 : 0;
+  // レベル計算: Lv1→2は1pt、Lv2→3は2pt、...
+  let overallLevel = 1;
+  let pointsInLevel = totalPoints;
+  while (pointsInLevel >= overallLevel) {
+    pointsInLevel -= overallLevel;
+    overallLevel++;
+  }
+  const pointsForNext = overallLevel;
+  const levelProgress = pointsForNext > 0 ? (pointsInLevel / pointsForNext) * 100 : 0;
 
   return (
     <div className="flex items-center gap-6">
@@ -33,24 +35,20 @@ export function PointsDisplay() {
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Next level progress */}
       <div className="flex flex-col">
-        <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-amber-400">{totalPoints}</span>
-          <span className="text-sm text-gray-500">/ {maxPoints} pt</span>
+        <div className="flex items-baseline gap-1">
+          <span className="text-xl font-bold text-amber-400">{pointsInLevel}</span>
+          <span className="text-sm text-gray-500">/ {pointsForNext} pt</span>
         </div>
 
-        {/* Progress bar */}
-        <div className="w-40 h-2 bg-gray-700 rounded-full overflow-hidden mt-1">
+        <div className="w-36 h-2.5 bg-gray-700 rounded-full overflow-hidden mt-1">
           <div
             className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500"
-            style={{ width: `${pointsProgress}%` }}
+            style={{ width: `${levelProgress}%` }}
           />
         </div>
 
-        <div className="text-xs text-gray-500 mt-1">
-          {unlockedCount} / {totalSkills} スキル習得
-        </div>
       </div>
     </div>
   );

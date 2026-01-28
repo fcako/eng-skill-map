@@ -77,10 +77,10 @@ export function SkillConnection({ fromSkill, toSkill }: SkillConnectionProps) {
   const pathD = `M ${x1} ${y1} Q ${controlX} ${controlY} ${x2} ${y2}`;
 
   // 線の色を決定
-  let strokeColor = '#1f2937'; // デフォルト（暗いグレー）
-  let glowColor = '#1f2937';
+  let strokeColor = '#d1d5db'; // デフォルト（白っぽいグレー）
+  let glowColor = '#d1d5db';
   let strokeWidth = 2;
-  let opacity = 0.25; // 未習得は暗く
+  let opacity = 0.7; // 未習得
 
   if (isHighlighted) {
     // 選択されたスキルに関連する線（黄色でハイライト）
@@ -89,14 +89,14 @@ export function SkillConnection({ fromSkill, toSkill }: SkillConnectionProps) {
     strokeWidth = 3;
     opacity = 1;
   } else if (isBothUnlocked) {
-    // 両方アンロック済み（明るい緑で目立つ）
-    strokeColor = '#22c55e';
-    glowColor = '#22c55e';
+    // 両方アンロック済み（ゴールド）
+    strokeColor = '#fbbf24';
+    glowColor = '#fbbf24';
     opacity = 1;
   } else if (isFromUnlocked || isToUnlocked) {
     // 片方だけアンロック（やや明るい）
-    strokeColor = '#374151';
-    opacity = 0.4;
+    strokeColor = '#d1d5db';
+    opacity = 0.7;
   }
 
   return (
