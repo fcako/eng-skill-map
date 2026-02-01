@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <!-- Strong glow filters -->
+    <filter id="glow-yellow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="25" result="blur1"/>
+      <feGaussianBlur stdDeviation="15" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-blue" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="20" result="blur1"/>
+      <feGaussianBlur stdDeviation="10" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-green" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="20" result="blur1"/>
+      <feGaussianBlur stdDeviation="10" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-purple" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="18" result="blur1"/>
+      <feGaussianBlur stdDeviation="8" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Radial gradients for glowing fill -->
+    <radialGradient id="grad-yellow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="40%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </radialGradient>
+    <radialGradient id="grad-blue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bfdbfe"/>
+      <stop offset="40%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </radialGradient>
+    <radialGradient id="grad-green" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bbf7d0"/>
+      <stop offset="40%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </radialGradient>
+    <radialGradient id="grad-purple" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e9d5ff"/>
+      <stop offset="40%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="224" fill="#0f0f23"/>
+
+  <!-- Connection lines (dashed) -->
+  <g stroke-width="6" stroke-dasharray="14,10" fill="none">
+    <!-- Unlocked connections (brighter) -->
+    <line x1="170" y1="854" x2="340" y2="560" stroke="#9ca3af"/>
+    <line x1="170" y1="854" x2="480" y2="720" stroke="#9ca3af"/>
+    <line x1="340" y1="560" x2="420" y2="250" stroke="#9ca3af"/>
+    <!-- Locked connections (dim) -->
+    <line x1="480" y1="720" x2="700" y2="350" stroke="#4b5563"/>
+    <line x1="480" y1="720" x2="854" y2="700" stroke="#374151"/>
+  </g>
+
+  <!-- Outer glow layers for unlocked skills -->
+  <circle cx="170" cy="854" r="100" fill="#fbbf24" opacity="0.3" filter="url(#glow-yellow)"/>
+  <circle cx="340" cy="560" r="85" fill="#3b82f6" opacity="0.3" filter="url(#glow-blue)"/>
+  <circle cx="480" cy="720" r="85" fill="#22c55e" opacity="0.3" filter="url(#glow-green)"/>
+  <circle cx="420" cy="250" r="75" fill="#a855f7" opacity="0.3" filter="url(#glow-purple)"/>
+
+  <!-- Skill nodes -->
+  <!-- Root: 獲得済み (yellow - glowing) -->
+  <circle cx="170" cy="854" r="85" fill="url(#grad-yellow)" filter="url(#glow-yellow)"/>
+  <circle cx="170" cy="854" r="85" fill="none" stroke="#fef3c7" stroke-width="4"/>
+
+  <!-- Level 1: 獲得済み -->
+  <circle cx="340" cy="560" r="75" fill="url(#grad-blue)" filter="url(#glow-blue)"/>
+  <circle cx="340" cy="560" r="75" fill="none" stroke="#bfdbfe" stroke-width="3"/>
+
+  <circle cx="480" cy="720" r="75" fill="url(#grad-green)" filter="url(#glow-green)"/>
+  <circle cx="480" cy="720" r="75" fill="none" stroke="#bbf7d0" stroke-width="3"/>
+
+  <!-- Level 2: 一部獲得済み -->
+  <circle cx="420" cy="250" r="65" fill="url(#grad-purple)" filter="url(#glow-purple)"/>
+  <circle cx="420" cy="250" r="65" fill="none" stroke="#e9d5ff" stroke-width="3"/>
+
+  <!-- 未獲得 (outline only) -->
+  <circle cx="700" cy="350" r="65" fill="none" stroke="#f59e0b" stroke-width="6"/>
+  <circle cx="854" cy="700" r="65" fill="none" stroke="#06b6d4" stroke-width="6"/>
+</svg>

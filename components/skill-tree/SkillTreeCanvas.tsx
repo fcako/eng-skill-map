@@ -370,15 +370,24 @@ export function SkillTreeCanvas() {
 
       {/* Canvas container */}
       <div
+        id="skill-map-canvas"
         className="relative"
         style={{
           width: canvasSize.width,
           height: canvasSize.height,
           minWidth: '100%',
           minHeight: '100%',
+          backgroundColor: '#0f0f23',
         }}
         onClick={handleCanvasClick}
       >
+        {/* Map Title */}
+        <div className="absolute top-8 left-8 z-20 pointer-events-none">
+          <h1 className="text-5xl font-bold text-white/80 tracking-wider">
+            Engineer Skill Map
+          </h1>
+        </div>
+
         {/* SVG for connection lines only */}
         <svg
           className="absolute inset-0 pointer-events-none z-10"

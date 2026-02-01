@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
-import { getAllSkills } from '@/data/skills';
+import { getAllSkills, MAP_CENTER } from '@/data/skills';
 
 export function PointsDisplay() {
   const [mounted, setMounted] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const { getTotalPoints, unlockedSkills, completedLearningItems } = useSkillTreeStore();
 
   useEffect(() => {
@@ -30,6 +31,71 @@ export function PointsDisplay() {
   const pointsForNext = overallLevel;
   const levelProgress = pointsForNext > 0 ? (pointsInLevel / pointsForNext) * 100 : 0;
   const pointsNeeded = pointsForNext - pointsInLevel;
+
+  // マップ画像をダウンロード/共有
+  const handleDownloadMap = useCallback(async () => {
+    if (isDownloading) return;
+
+    const canvas = document.getElementById('skill-map-canvas') as HTMLElement;
+    if (!canvas) return;
+
+    setIsDownloading(true);
+    try {
+      // ベースのスキル位置からマップサイズを計算（スケール前の値）
+      const skills = getAllSkills();
+      const padding = 150;
+      const xs = skills.map((s) => s.position.x);
+      const ys = skills.map((s) => s.position.y);
+      const mapWidth = Math.max(...xs) + padding;
+      const mapHeight = Math.max(...ys) + padding;
+
+      // modern-screenshotを使用（lab()カラーに対応）
+      const { domToBlob } = await import('modern-screenshot');
+      const blob = await domToBlob(canvas, {
+        backgroundColor: '#0f0f23',
+        scale: 1,
+        width: mapWidth,
+        height: mapHeight,
+        style: {
+          transform: 'none',
+        },
+      });
+
+      if (!blob) {
+        throw new Error('画像の生成に失敗しました');
+      }
+
+      const fileName = `skill-map-${new Date().toISOString().split('T')[0]}.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
+
+      // Web Share APIで共有シートを表示（iOS/Android）
+      if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'スキルマップ',
+        });
+        return;
+      }
+
+      // フォールバック: ダウンロードリンク（デスクトップブラウザ）
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error: unknown) {
+      // ユーザーがキャンセルした場合は無視
+      if (error instanceof Error && error.name === 'AbortError') {
+        return;
+      }
+      console.error('Failed to download map:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      alert(`画像の保存に失敗しました: ${errorMessage}`);
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [isDownloading]);
 
   return (
     <>
@@ -168,6 +234,30 @@ export function PointsDisplay() {
                   修得項目をチェックしてポイントを獲得しよう
                 </div>
               </div>
+
+              {/* Download Map Button */}
+              <button
+                onClick={handleDownloadMap}
+                disabled={isDownloading}
+                className="w-full flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-700/50 disabled:text-gray-500 rounded-lg px-4 py-3 text-white text-sm transition-colors mt-4"
+              >
+                {isDownloading ? (
+                  <>
+                    <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    <span>保存中...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>マップを画像として保存</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </>

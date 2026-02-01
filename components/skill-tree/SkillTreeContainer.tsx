@@ -14,9 +14,8 @@ export function SkillTreeContainer() {
         style={{ paddingTop: 'max(env(safe-area-inset-top), 8px)' }}
       >
         <div className="flex items-center gap-2 sm:gap-8 w-full sm:w-auto justify-between sm:justify-start">
-          <h1 className="text-base sm:text-xl font-bold text-white">
-            <span className="hidden sm:inline">Engineer Skill Map</span>
-            <span className="sm:hidden">Eng Skill Map</span>
+          <h1 className="text-sm sm:text-xl font-bold text-white">
+            Engineer Skill Map
           </h1>
           <div className="sm:hidden">
             <PointsDisplay />

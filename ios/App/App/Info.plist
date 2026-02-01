@@ -47,5 +47,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>スキルマップの画像を写真アプリに保存するために使用します</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>スキルマップの画像を写真アプリに保存するために使用します</string>
 </dict>
 </plist>
