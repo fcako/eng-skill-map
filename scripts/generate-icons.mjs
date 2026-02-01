@@ -33,6 +33,7 @@ async function generateIcons() {
 
     await sharp(svgBuffer)
       .resize(pixelSize, pixelSize)
+      .flatten({ background: '#0f0f23' }) // アルファチャンネルを削除、背景色で塗りつぶし
       .png()
       .toFile(outputPath);
 

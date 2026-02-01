@@ -10,7 +10,7 @@ export function SkillTreeContainer() {
     <div className="h-screen flex flex-col bg-[var(--background)]">
       {/* Header - 固定、セーフエリア対応 */}
       <header
-        className="flex-shrink-0 flex flex-col sm:flex-row items-start sm:items-center justify-between px-3 sm:px-6 py-2 sm:py-4 border-b border-gray-800 bg-[var(--background-secondary)] gap-2 sm:gap-0"
+        className="flex-shrink-0 flex flex-col sm:flex-row items-start sm:items-center justify-between px-3 sm:px-6 py-2 sm:py-4 border-b border-gray-800 bg-[var(--background-secondary)] gap-2 sm:gap-0 overflow-hidden touch-none"
         style={{ paddingTop: 'max(env(safe-area-inset-top), 8px)' }}
       >
         <div className="flex items-center gap-2 sm:gap-8 w-full sm:w-auto justify-between sm:justify-start">

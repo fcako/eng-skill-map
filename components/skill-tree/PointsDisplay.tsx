@@ -171,7 +171,6 @@ export function PointsDisplay() {
               </div>
               <div>
                 <div className="text-2xl font-bold text-white">Level {overallLevel}</div>
-                <div className="text-gray-400 text-sm">エンジニア見習い</div>
               </div>
             </div>
 

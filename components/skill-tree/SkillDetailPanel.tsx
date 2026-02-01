@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
 import { getSkillById, CATEGORY_NAMES } from '@/data/skills';
 
@@ -14,6 +15,16 @@ export function SkillDetailPanel() {
 
   const skill = selectedSkillId ? getSkillById(selectedSkillId) : null;
   const progress = skill ? getSkillProgress(skill.id) : { completed: 0, total: 0, percentage: 0 };
+
+  // モバイルでスキル選択時は背景スクロールを無効化
+  useEffect(() => {
+    if (skill) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+  }, [skill]);
 
   // モバイルでスキル未選択時は非表示
   if (!skill) {
@@ -53,7 +64,7 @@ export function SkillDetailPanel() {
     <>
       {/* モバイル用オーバーレイ背景 */}
       <div
-        className="sm:hidden fixed inset-0 bg-black/60 z-40"
+        className="sm:hidden fixed inset-0 bg-black/60 z-40 touch-none"
         onClick={() => selectSkill(null)}
       />
 
