@@ -17,11 +17,14 @@ const TIER_RADIUS: Record<number, number> = {
   5: 1200,
 };
 
-// カテゴリごとの角度範囲（120度ずつ）
+// カテゴリごとの角度範囲（スキル数に比例して配分）
+// Backend(31), Frontend(25), Infrastructure(18), DevOps(16) = 90スキル
+// 大きいカテゴリを対角に配置してバランスを取る
 const CATEGORY_ANGLE_RANGE: Record<SkillCategory, { start: number; end: number }> = {
-  frontend: { start: 210, end: 330 },      // 下部
-  backend: { start: 330, end: 450 },       // 右上部（450 = 90）
-  infrastructure: { start: 90, end: 210 }, // 左上部
+  frontend: { start: 225, end: 325 },      // 下部 (100°) - 25スキル
+  infrastructure: { start: 325, end: 397 }, // 右部 (72°) - 18スキル
+  devops: { start: 37, end: 101 },         // 上部 (64°) - 16スキル
+  backend: { start: 101, end: 225 },       // 左部 (124°) - 31スキル
 };
 
 // ノード間の最小距離（ピクセル）
@@ -150,7 +153,7 @@ function generateAllSkillsWithPositions(allSkillsData: SkillData[]): Skill[] {
 
     // カテゴリごとにグループ化
     const skillsByCategory = new Map<SkillCategory, SkillData[]>();
-    (['frontend', 'backend', 'infrastructure'] as SkillCategory[]).forEach((cat) => {
+    (['frontend', 'backend', 'infrastructure', 'devops'] as SkillCategory[]).forEach((cat) => {
       skillsByCategory.set(cat, tierSkills.filter((s) => s.category === cat));
     });
 
@@ -225,7 +228,7 @@ const allSkillsData: SkillData[] = [
   // Frontend スキル
   // ===========================================
   {
-    id: 'html', name: 'HTML', tier: 1, category: 'frontend', description: 'Webページの構造を定義', icon: 'html', pointValue: 10, connections: ['accessibility'],
+    id: 'html', name: 'HTML', tier: 1, category: 'frontend', description: 'Webページの骨格となるマークアップ言語。セマンティックな要素を使って文書構造を定義し、アクセシビリティやSEOの基盤となる', icon: 'html', pointValue: 10, connections: ['accessibility'],
     learningItems: [
       { id: 'html-1', content: 'セマンティックHTML（header, main, article等）を理解する' },
       { id: 'html-2', content: 'フォーム要素とバリデーション属性を使いこなす' },
@@ -237,7 +240,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'css', name: 'CSS', tier: 1, category: 'frontend', description: 'スタイリング', icon: 'css', pointValue: 10, connections: ['flexbox', 'grid', 'sass', 'responsive'],
+    id: 'css', name: 'CSS', tier: 1, category: 'frontend', description: 'Webページの見た目を定義するスタイルシート言語。レイアウト、色、フォント、アニメーションなど視覚的な表現を制御する', icon: 'css', pointValue: 10, connections: ['flexbox', 'grid', 'sass', 'responsive'],
     learningItems: [
       { id: 'css-1', content: 'ボックスモデルを完全に理解する' },
       { id: 'css-2', content: 'セレクタの優先度（詳細度）を理解する' },
@@ -250,7 +253,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'javascript', name: 'JavaScript', tier: 1, category: 'frontend', description: 'プログラミング言語', icon: 'javascript', pointValue: 10, connections: ['typescript', 'es6', 'browser-api'],
+    id: 'javascript', name: 'JavaScript', tier: 1, category: 'frontend', description: 'Webブラウザ上で動作するスクリプト言語。動的なUIやユーザーインタラクション、非同期処理を実現するフロントエンドの中核技術', icon: 'javascript', pointValue: 10, connections: ['typescript', 'es6', 'browser-api'],
     learningItems: [
       { id: 'js-1', content: '変数スコープとホイスティングを理解する' },
       { id: 'js-2', content: 'クロージャを理解し活用できる' },
@@ -264,7 +267,7 @@ const allSkillsData: SkillData[] = [
   },
 
   {
-    id: 'accessibility', name: 'アクセシビリティ', tier: 2, category: 'frontend', description: 'WCAG準拠', icon: 'accessibility', pointValue: 15, connections: [],
+    id: 'accessibility', name: 'アクセシビリティ', tier: 2, category: 'frontend', description: '障害を持つユーザーを含む全ての人がWebを利用できるようにする技術。WCAG基準に準拠したUI設計やスクリーンリーダー対応を行う', icon: 'accessibility', pointValue: 15, connections: [],
     learningItems: [
       { id: 'a11y-1', content: 'WCAG 2.1のガイドラインを理解する' },
       { id: 'a11y-2', content: 'スクリーンリーダーでの動作確認ができる' },
@@ -313,7 +316,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'typescript', name: 'TypeScript', tier: 2, category: 'frontend', description: '静的型付け', icon: 'typescript', pointValue: 15, connections: ['react', 'vue', 'angular', 'svelte', 'bundler', 'nodejs'],
+    id: 'typescript', name: 'TypeScript', tier: 2, category: 'frontend', description: 'JavaScriptに静的型付けを追加した言語。コンパイル時の型チェックにより、バグの早期発見とIDEのサポート強化を実現する', icon: 'typescript', pointValue: 15, connections: ['react', 'vue', 'angular', 'svelte', 'bundler', 'nodejs'],
     learningItems: [
       { id: 'ts-1', content: '基本的な型アノテーションを使用できる' },
       { id: 'ts-2', content: 'インターフェースと型エイリアスを使い分けられる' },
@@ -379,7 +382,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'react', name: 'React', tier: 3, category: 'frontend', description: 'UIライブラリ', icon: 'react', pointValue: 20, connections: ['nextjs', 'redux', 'testing-frontend', 'storybook'],
+    id: 'react', name: 'React', tier: 3, category: 'frontend', description: 'Meta社が開発したUIライブラリ。コンポーネントベースの設計とVirtual DOMにより、効率的で保守性の高いUIを構築できる', icon: 'react', pointValue: 20, connections: ['nextjs', 'redux', 'testing-frontend', 'storybook'],
     learningItems: [
       { id: 'react-1', content: 'JSXの構文とルールを理解する' },
       { id: 'react-2', content: 'useState, useEffectを使いこなす' },
@@ -460,7 +463,7 @@ const allSkillsData: SkillData[] = [
   },
 
   {
-    id: 'nextjs', name: 'Next.js', tier: 4, category: 'frontend', description: 'React SSR/SSG', icon: 'nextjs', pointValue: 25, connections: ['performance', 'rest-api', 'pwa', 'security-fe'],
+    id: 'nextjs', name: 'Next.js', tier: 4, category: 'frontend', description: 'Reactベースのフルスタックフレームワーク。SSR/SSG/ISRによる最適化、ファイルベースルーティング、API Routesを提供する', icon: 'nextjs', pointValue: 25, connections: ['performance', 'rest-api', 'pwa', 'security-fe'],
     learningItems: [
       { id: 'next-1', content: 'App Routerの構造を理解する' },
       { id: 'next-2', content: 'Server ComponentsとClient Componentsを使い分けられる' },
@@ -558,7 +561,7 @@ const allSkillsData: SkillData[] = [
   // Backend スキル
   // ===========================================
   {
-    id: 'nodejs', name: 'Node.js', tier: 1, category: 'backend', description: 'サーバーサイドJS', icon: 'nodejs', pointValue: 15, connections: ['express', 'nestjs'],
+    id: 'nodejs', name: 'Node.js', tier: 1, category: 'backend', description: 'JavaScriptをサーバーサイドで実行するランタイム環境。イベント駆動・ノンブロッキングI/Oにより高いスケーラビリティを実現する', icon: 'nodejs', pointValue: 15, connections: ['express', 'nestjs'],
     learningItems: [
       { id: 'node-1', content: 'イベントループとノンブロッキングI/Oを理解する' },
       { id: 'node-2', content: 'npm/yarnでパッケージ管理ができる' },
@@ -571,7 +574,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'python', name: 'Python', tier: 1, category: 'backend', description: '汎用言語', icon: 'python', pointValue: 15, connections: ['django', 'fastapi'],
+    id: 'python', name: 'Python', tier: 1, category: 'backend', description: 'シンプルで読みやすい構文が特徴の汎用プログラミング言語。Web開発からデータ分析、機械学習まで幅広い分野で活用される', icon: 'python', pointValue: 15, connections: ['django', 'fastapi'],
     learningItems: [
       { id: 'py-1', content: '基本的な文法とデータ型を理解する' },
       { id: 'py-2', content: 'リスト内包表記を使いこなす' },
@@ -584,7 +587,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'go', name: 'Go', tier: 1, category: 'backend', description: '高速並行処理', icon: 'go', pointValue: 15, connections: ['gin', 'rust'],
+    id: 'go', name: 'Go', tier: 1, category: 'backend', description: 'Google開発のコンパイル言語。シンプルな構文、高速なコンパイル、goroutineによる軽量な並行処理が特徴', icon: 'go', pointValue: 15, connections: ['gin', 'rust'],
     learningItems: [
       { id: 'go-1', content: '基本文法と型システムを理解する' },
       { id: 'go-2', content: 'goroutineで並行処理ができる' },
@@ -966,10 +969,37 @@ const allSkillsData: SkillData[] = [
   },
 
   // ===========================================
+  // DevOps スキル
+  // ===========================================
+  {
+    id: 'devops-basics', name: 'DevOps基礎', tier: 1, category: 'devops', description: 'DevOpsの文化と原則を理解する。開発と運用の協力体制、継続的改善、自動化の重要性を学ぶ', icon: 'devops', pointValue: 10, connections: ['github', 'gitlab'],
+    learningItems: [
+      { id: 'devops-b-1', content: 'DevOpsの歴史と背景を理解する' },
+      { id: 'devops-b-2', content: 'CI/CDの概念を理解する' },
+      { id: 'devops-b-3', content: 'Infrastructure as Codeの概念を理解する' },
+      { id: 'devops-b-4', content: 'モニタリングとログ管理の重要性を理解する' },
+      { id: 'devops-b-5', content: 'DevOpsとアジャイルの関係を理解する' },
+      { id: 'devops-b-6', content: 'DevOpsのメトリクス（DORA等）を理解する' },
+    ]
+  },
+  {
+    id: 'gitlab', name: 'GitLab', tier: 2, category: 'devops', description: 'Git/CI/CDを統合したDevOpsプラットフォーム。リポジトリ管理からCI/CD、セキュリティスキャンまで一貫したワークフローを提供', icon: 'gitlab', pointValue: 15, connections: ['cicd', 'docker'],
+    learningItems: [
+      { id: 'gitlab-1', content: 'GitLabプロジェクトを作成・管理できる' },
+      { id: 'gitlab-2', content: 'Merge Requestワークフローを理解する' },
+      { id: 'gitlab-3', content: '.gitlab-ci.ymlでパイプラインを定義できる' },
+      { id: 'gitlab-4', content: 'GitLab Runnerを設定できる' },
+      { id: 'gitlab-5', content: 'Container Registryを使用できる' },
+      { id: 'gitlab-6', content: 'GitLabセキュリティ機能（SAST/DAST）を活用できる' },
+      { id: 'gitlab-7', content: 'GitLab Pagesでサイトを公開できる' },
+    ]
+  },
+
+  // ===========================================
   // Infrastructure スキル
   // ===========================================
   {
-    id: 'linux', name: 'Linux', tier: 1, category: 'infrastructure', description: 'OS基礎', icon: 'linux', pointValue: 15, connections: ['shell', 'networking', 'dns'],
+    id: 'linux', name: 'Linux', tier: 1, category: 'infrastructure', description: 'オープンソースのOS。サーバー環境のデファクトスタンダードであり、コマンドライン操作やシステム管理の基礎となる', icon: 'linux', pointValue: 15, connections: ['shell', 'networking', 'dns'],
     learningItems: [
       { id: 'linux-1', content: '基本的なコマンド（ls, cd, cp, mv等）を使用できる' },
       { id: 'linux-2', content: 'ファイルパーミッションを理解し設定できる' },
@@ -982,7 +1012,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'git', name: 'Git', tier: 1, category: 'infrastructure', description: 'バージョン管理', icon: 'git', pointValue: 15, connections: ['github'],
+    id: 'git', name: 'Git', tier: 1, category: 'infrastructure', description: '分散型バージョン管理システム。コードの変更履歴を追跡し、チーム開発でのブランチ管理やマージを効率的に行える', icon: 'git', pointValue: 15, connections: ['github'],
     learningItems: [
       { id: 'git-1', content: '基本操作（add, commit, push, pull）ができる' },
       { id: 'git-2', content: 'ブランチの作成・マージができる' },
@@ -1021,7 +1051,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'github', name: 'GitHub', tier: 2, category: 'infrastructure', description: 'Git hosting', icon: 'github', pointValue: 10, connections: ['cicd'],
+    id: 'github', name: 'GitHub', tier: 2, category: 'devops', description: 'Gitリポジトリのホスティングサービス。Issues、Pull Request、Actionsなどチーム開発に必要な機能を提供する', icon: 'github', pointValue: 10, connections: ['cicd'],
     learningItems: [
       { id: 'gh-1', content: 'リポジトリの作成・管理ができる' },
       { id: 'gh-2', content: 'Pull Requestのワークフローを理解する' },
@@ -1044,9 +1074,21 @@ const allSkillsData: SkillData[] = [
       { id: 'dns-7', content: 'Route 53/Cloud DNSを使用できる' },
     ]
   },
+  {
+    id: 'cloud-basics', name: 'クラウド基礎', tier: 2, category: 'infrastructure', description: 'クラウドコンピューティングの基本概念。IaaS/PaaS/SaaSの違い、リージョン、スケーリング、課金モデルを理解する', icon: 'cloud', pointValue: 10, connections: ['aws-basics', 'gcp-basics', 'azure-basics'],
+    learningItems: [
+      { id: 'cloud-1', content: 'クラウドの利点（スケーラビリティ、コスト効率等）を理解する' },
+      { id: 'cloud-2', content: 'IaaS/PaaS/SaaSの違いを説明できる' },
+      { id: 'cloud-3', content: 'リージョンとアベイラビリティゾーンを理解する' },
+      { id: 'cloud-4', content: '従量課金モデルを理解する' },
+      { id: 'cloud-5', content: '垂直/水平スケーリングを理解する' },
+      { id: 'cloud-6', content: '責任共有モデルを理解する' },
+      { id: 'cloud-7', content: 'マネージドサービスの利点を理解する' },
+    ]
+  },
 
   {
-    id: 'docker', name: 'Docker', tier: 3, category: 'infrastructure', description: 'コンテナ', icon: 'docker', pointValue: 20, connections: ['kubernetes'],
+    id: 'docker', name: 'Docker', tier: 3, category: 'devops', description: 'アプリケーションをコンテナとしてパッケージ化・実行するプラットフォーム。環境の再現性と移植性を高め、開発〜本番の一貫性を保つ', icon: 'docker', pointValue: 20, connections: ['kubernetes'],
     learningItems: [
       { id: 'docker-1', content: 'コンテナの概念を理解する' },
       { id: 'docker-2', content: 'Dockerfileを書ける' },
@@ -1059,7 +1101,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'nginx', name: 'Nginx', tier: 3, category: 'infrastructure', description: 'Webサーバー', icon: 'nginx', pointValue: 15, connections: ['aws', 'load-balancer'],
+    id: 'nginx', name: 'Nginx', tier: 3, category: 'infrastructure', description: 'Webサーバー', icon: 'nginx', pointValue: 15, connections: ['aws-basics', 'load-balancer'],
     learningItems: [
       { id: 'nginx-1', content: '基本的な設定ファイルを理解する' },
       { id: 'nginx-2', content: 'バーチャルホストを設定できる' },
@@ -1071,7 +1113,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'cicd', name: 'CI/CD', tier: 3, category: 'infrastructure', description: 'Actions', icon: 'cicd', pointValue: 20, connections: ['aws', 'gcp', 'azure', 'ansible', 'testing-frontend', 'testing-backend'],
+    id: 'cicd', name: 'CI/CD', tier: 3, category: 'devops', description: '継続的インテグレーション/デリバリー。コードの変更を自動でテスト・ビルド・デプロイし、ソフトウェアの品質と開発速度を向上させる', icon: 'cicd', pointValue: 20, connections: ['kubernetes', 'ansible'],
     learningItems: [
       { id: 'cicd-1', content: 'CI/CDの概念と利点を理解する' },
       { id: 'cicd-2', content: 'GitHub Actionsでワークフローを作成できる' },
@@ -1084,7 +1126,32 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'cloudflare', name: 'Cloudflare', tier: 3, category: 'infrastructure', description: 'CDN/Edge', icon: 'cloudflare', pointValue: 15, connections: ['aws', 'gcp', 'azure'],
+    id: 'container-registry', name: 'Container Registry', tier: 3, category: 'devops', description: 'Dockerイメージを保存・管理するレジストリサービス。ECR、GCR、Docker Hubなどでイメージのバージョン管理とセキュリティスキャンを行う', icon: 'registry', pointValue: 15, connections: ['kubernetes'],
+    learningItems: [
+      { id: 'cr-1', content: 'コンテナレジストリの役割を理解する' },
+      { id: 'cr-2', content: 'Docker Hubにイメージをプッシュできる' },
+      { id: 'cr-3', content: 'プライベートレジストリを設定できる' },
+      { id: 'cr-4', content: 'イメージタグ戦略を設計できる' },
+      { id: 'cr-5', content: 'イメージの脆弱性スキャンを実行できる' },
+      { id: 'cr-6', content: 'ECR/GCR/ACRを使用できる' },
+      { id: 'cr-7', content: 'イメージの自動クリーンアップを設定できる' },
+    ]
+  },
+  {
+    id: 'logging', name: 'ログ管理', tier: 3, category: 'devops', description: '分散システムのログを収集・集約・分析する。ELK Stack、Loki、Fluentdなどを使ってトラブルシューティングを効率化する', icon: 'logging', pointValue: 15, connections: ['monitoring'],
+    learningItems: [
+      { id: 'log-1', content: '構造化ログの重要性を理解する' },
+      { id: 'log-2', content: 'Fluentd/Fluent Bitを設定できる' },
+      { id: 'log-3', content: 'Elasticsearchでログを保存できる' },
+      { id: 'log-4', content: 'Kibanaでログを可視化できる' },
+      { id: 'log-5', content: 'Lokiでログを集約できる' },
+      { id: 'log-6', content: 'ログローテーションを設定できる' },
+      { id: 'log-7', content: 'ログからアラートを設定できる' },
+      { id: 'log-8', content: 'トレースIDでログを追跡できる' },
+    ]
+  },
+  {
+    id: 'cloudflare', name: 'Cloudflare', tier: 3, category: 'infrastructure', description: 'CDN/Edge', icon: 'cloudflare', pointValue: 15, connections: ['aws-basics', 'gcp-basics', 'azure-basics'],
     learningItems: [
       { id: 'cf-1', content: 'DNSをCloudflareで管理できる' },
       { id: 'cf-2', content: 'CDNの設定ができる' },
@@ -1109,7 +1176,7 @@ const allSkillsData: SkillData[] = [
   },
 
   {
-    id: 'kubernetes', name: 'Kubernetes', tier: 4, category: 'infrastructure', description: 'オーケストレーション', icon: 'kubernetes', pointValue: 30, connections: ['helm', 'argocd'],
+    id: 'kubernetes', name: 'Kubernetes', tier: 4, category: 'devops', description: 'コンテナのオーケストレーションシステム。複数のコンテナを管理し、スケーリング、ロードバランシング、自己修復を自動化する', icon: 'kubernetes', pointValue: 30, connections: ['helm', 'argocd', 'monitoring'],
     learningItems: [
       { id: 'k8s-1', content: 'Kubernetesアーキテクチャを理解する' },
       { id: 'k8s-2', content: 'Pod, Deployment, Serviceを作成できる' },
@@ -1122,50 +1189,105 @@ const allSkillsData: SkillData[] = [
       { id: 'k8s-9', content: 'CKA/CKAD資格を取得する' },
     ]
   },
+  // AWS スキル（分割）
   {
-    id: 'aws', name: 'AWS', tier: 4, category: 'infrastructure', description: 'Amazon Cloud', icon: 'aws', pointValue: 25, connections: ['terraform', 'monitoring', 'security-infra'],
+    id: 'aws-basics', name: 'AWS基礎', tier: 3, category: 'infrastructure', description: 'AWSの基本サービス。IAMによるアクセス管理、EC2によるコンピューティング、S3によるストレージ、VPCによるネットワーク構築を学ぶ', icon: 'aws', pointValue: 15, connections: ['aws-serverless', 'aws-data', 'aws-container'],
     learningItems: [
-      { id: 'aws-1', content: 'IAMでユーザー・ロールを管理できる' },
-      { id: 'aws-2', content: 'EC2インスタンスを作成・管理できる' },
-      { id: 'aws-3', content: 'S3でオブジェクトストレージを使用できる' },
-      { id: 'aws-4', content: 'RDSでデータベースを管理できる' },
-      { id: 'aws-5', content: 'VPCでネットワークを設計できる' },
-      { id: 'aws-6', content: 'Lambda関数を作成できる' },
-      { id: 'aws-7', content: 'CloudWatchで監視できる' },
-      { id: 'aws-8', content: 'ECS/EKSでコンテナを運用できる' },
-      { id: 'aws-9', content: 'AWS認定資格を取得する（SAA等）' },
+      { id: 'aws-b-1', content: 'AWSアカウントとリージョンを理解する' },
+      { id: 'aws-b-2', content: 'IAMでユーザー・ロール・ポリシーを管理できる' },
+      { id: 'aws-b-3', content: 'EC2インスタンスを作成・管理できる' },
+      { id: 'aws-b-4', content: 'S3バケットを作成しオブジェクトを管理できる' },
+      { id: 'aws-b-5', content: 'VPCでサブネット・ルートテーブルを設計できる' },
+      { id: 'aws-b-6', content: 'セキュリティグループとNACLを設定できる' },
+      { id: 'aws-b-7', content: 'CloudWatchで基本的な監視ができる' },
     ]
   },
   {
-    id: 'gcp', name: 'GCP', tier: 4, category: 'infrastructure', description: 'Google Cloud', icon: 'gcp', pointValue: 25, connections: ['terraform', 'security-infra'],
+    id: 'aws-serverless', name: 'AWSサーバーレス', tier: 4, category: 'infrastructure', description: 'サーバー管理不要なAWSサービス群。Lambda、API Gateway、DynamoDB、Step Functionsでスケーラブルなアプリケーションを構築', icon: 'lambda', pointValue: 20, connections: ['terraform', 'security-infra'],
     learningItems: [
-      { id: 'gcp-1', content: 'IAMでアクセス制御ができる' },
-      { id: 'gcp-2', content: 'Compute Engineを使用できる' },
-      { id: 'gcp-3', content: 'Cloud Storageを使用できる' },
-      { id: 'gcp-4', content: 'Cloud SQLを使用できる' },
-      { id: 'gcp-5', content: 'VPCネットワークを設計できる' },
-      { id: 'gcp-6', content: 'Cloud Functionsを使用できる' },
-      { id: 'gcp-7', content: 'GKEでKubernetesを運用できる' },
-      { id: 'gcp-8', content: 'BigQueryを使用できる' },
-      { id: 'gcp-9', content: 'Google Cloud認定資格を取得する' },
+      { id: 'aws-sl-1', content: 'Lambda関数を作成・デプロイできる' },
+      { id: 'aws-sl-2', content: 'API Gatewayでエンドポイントを作成できる' },
+      { id: 'aws-sl-3', content: 'DynamoDBでテーブルを設計できる' },
+      { id: 'aws-sl-4', content: 'Step Functionsでワークフローを構築できる' },
+      { id: 'aws-sl-5', content: 'EventBridgeでイベント駆動設計ができる' },
+      { id: 'aws-sl-6', content: 'SAM/Serverless Frameworkを使用できる' },
+      { id: 'aws-sl-7', content: 'コールドスタート対策ができる' },
     ]
   },
   {
-    id: 'azure', name: 'Azure', tier: 4, category: 'infrastructure', description: 'Microsoft Cloud', icon: 'azure', pointValue: 25, connections: ['terraform', 'security-infra'],
+    id: 'aws-data', name: 'AWSデータ基盤', tier: 4, category: 'infrastructure', description: 'AWSのデータ関連サービス。RDS、Aurora、ElastiCache、Redshiftなどでデータの保存・処理・分析基盤を構築', icon: 'database', pointValue: 20, connections: ['terraform', 'security-infra'],
     learningItems: [
-      { id: 'azure-1', content: 'Azure ADでID管理ができる' },
-      { id: 'azure-2', content: 'Virtual Machinesを作成できる' },
-      { id: 'azure-3', content: 'Blob Storageを使用できる' },
-      { id: 'azure-4', content: 'Azure SQL Databaseを使用できる' },
-      { id: 'azure-5', content: 'Virtual Networkを設計できる' },
-      { id: 'azure-6', content: 'Azure Functionsを使用できる' },
-      { id: 'azure-7', content: 'AKSでKubernetesを運用できる' },
-      { id: 'azure-8', content: 'Azure DevOpsを使用できる' },
-      { id: 'azure-9', content: 'Azure認定資格を取得する（AZ-900等）' },
+      { id: 'aws-d-1', content: 'RDSでデータベースを作成・管理できる' },
+      { id: 'aws-d-2', content: 'Auroraの特徴と利点を理解する' },
+      { id: 'aws-d-3', content: 'ElastiCacheでキャッシュ層を構築できる' },
+      { id: 'aws-d-4', content: 'S3のストレージクラスを使い分けられる' },
+      { id: 'aws-d-5', content: 'Redshiftでデータウェアハウスを構築できる' },
+      { id: 'aws-d-6', content: 'バックアップとリストアを設定できる' },
+      { id: 'aws-d-7', content: 'データ暗号化を設定できる' },
     ]
   },
   {
-    id: 'ansible', name: 'Ansible', tier: 4, category: 'infrastructure', description: '構成管理', icon: 'ansible', pointValue: 20, connections: ['terraform'],
+    id: 'aws-container', name: 'AWSコンテナ', tier: 5, category: 'infrastructure', description: 'AWSのコンテナサービス。ECS、EKS、Fargateでコンテナワークロードを本番運用し、ECRでイメージを管理する', icon: 'container', pointValue: 20, connections: ['security-infra'],
+    learningItems: [
+      { id: 'aws-c-1', content: 'ECSでタスクとサービスを定義できる' },
+      { id: 'aws-c-2', content: 'Fargateでサーバーレスコンテナを運用できる' },
+      { id: 'aws-c-3', content: 'EKSでKubernetesクラスターを構築できる' },
+      { id: 'aws-c-4', content: 'ECRでイメージを管理できる' },
+      { id: 'aws-c-5', content: 'App Runnerを使用できる' },
+      { id: 'aws-c-6', content: 'オートスケーリングを設定できる' },
+      { id: 'aws-c-7', content: 'AWS認定資格を取得する（SAA/SAP等）' },
+    ]
+  },
+  // GCP スキル（分割）
+  {
+    id: 'gcp-basics', name: 'GCP基礎', tier: 3, category: 'infrastructure', description: 'Google Cloudの基本サービス。IAM、Compute Engine、Cloud Storage、VPCでクラウドインフラの基礎を学ぶ', icon: 'gcp', pointValue: 15, connections: ['gcp-advanced'],
+    learningItems: [
+      { id: 'gcp-b-1', content: 'プロジェクトとIAMを理解する' },
+      { id: 'gcp-b-2', content: 'Compute Engineでインスタンスを作成できる' },
+      { id: 'gcp-b-3', content: 'Cloud Storageを使用できる' },
+      { id: 'gcp-b-4', content: 'VPCネットワークを設計できる' },
+      { id: 'gcp-b-5', content: 'Cloud SQLを使用できる' },
+      { id: 'gcp-b-6', content: 'Cloud Monitoringで監視できる' },
+    ]
+  },
+  {
+    id: 'gcp-advanced', name: 'GCP応用', tier: 4, category: 'infrastructure', description: 'Google Cloudの応用サービス。GKE、BigQuery、Cloud Functions、Cloud Runでモダンなアプリケーションを構築', icon: 'gcp', pointValue: 20, connections: ['terraform', 'security-infra'],
+    learningItems: [
+      { id: 'gcp-a-1', content: 'GKEでKubernetesを運用できる' },
+      { id: 'gcp-a-2', content: 'Cloud Functionsを使用できる' },
+      { id: 'gcp-a-3', content: 'Cloud Runでコンテナを運用できる' },
+      { id: 'gcp-a-4', content: 'BigQueryでデータ分析ができる' },
+      { id: 'gcp-a-5', content: 'Pub/Subでメッセージングができる' },
+      { id: 'gcp-a-6', content: 'Cloud Buildでビルドパイプラインを構築できる' },
+      { id: 'gcp-a-7', content: 'Google Cloud認定資格を取得する' },
+    ]
+  },
+  // Azure スキル（分割）
+  {
+    id: 'azure-basics', name: 'Azure基礎', tier: 3, category: 'infrastructure', description: 'Microsoft Azureの基本サービス。Azure AD、Virtual Machines、Blob Storage、Virtual Networkでクラウド基盤を構築', icon: 'azure', pointValue: 15, connections: ['azure-advanced'],
+    learningItems: [
+      { id: 'azure-b-1', content: 'サブスクリプションとリソースグループを理解する' },
+      { id: 'azure-b-2', content: 'Azure ADでID管理ができる' },
+      { id: 'azure-b-3', content: 'Virtual Machinesを作成できる' },
+      { id: 'azure-b-4', content: 'Blob Storageを使用できる' },
+      { id: 'azure-b-5', content: 'Virtual Networkを設計できる' },
+      { id: 'azure-b-6', content: 'Azure SQL Databaseを使用できる' },
+    ]
+  },
+  {
+    id: 'azure-advanced', name: 'Azure応用', tier: 4, category: 'infrastructure', description: 'Microsoft Azureの応用サービス。AKS、Azure Functions、Azure DevOps、Cosmos DBでエンタープライズアプリケーションを構築', icon: 'azure', pointValue: 20, connections: ['terraform', 'security-infra'],
+    learningItems: [
+      { id: 'azure-a-1', content: 'AKSでKubernetesを運用できる' },
+      { id: 'azure-a-2', content: 'Azure Functionsを使用できる' },
+      { id: 'azure-a-3', content: 'Azure DevOpsでパイプラインを構築できる' },
+      { id: 'azure-a-4', content: 'Cosmos DBを使用できる' },
+      { id: 'azure-a-5', content: 'App Serviceでアプリをデプロイできる' },
+      { id: 'azure-a-6', content: 'Azure Container Appsを使用できる' },
+      { id: 'azure-a-7', content: 'Azure認定資格を取得する（AZ-104等）' },
+    ]
+  },
+  {
+    id: 'ansible', name: 'Ansible', tier: 4, category: 'devops', description: 'エージェントレスの構成管理ツール。YAMLベースのPlaybookでサーバー設定やアプリケーションデプロイを自動化する', icon: 'ansible', pointValue: 20, connections: ['terraform'],
     learningItems: [
       { id: 'ans-1', content: 'Ansibleの基本概念を理解する' },
       { id: 'ans-2', content: 'インベントリを管理できる' },
@@ -1177,9 +1299,34 @@ const allSkillsData: SkillData[] = [
       { id: 'ans-8', content: '冪等性を理解し実装できる' },
     ]
   },
+  {
+    id: 'vault', name: 'HashiCorp Vault', tier: 4, category: 'devops', description: 'シークレット管理とデータ保護のためのツール。APIキー、パスワード、証明書などの機密情報を安全に管理する', icon: 'vault', pointValue: 20, connections: ['terraform'],
+    learningItems: [
+      { id: 'vault-1', content: 'Vaultの基本概念を理解する' },
+      { id: 'vault-2', content: 'シークレットエンジンを使用できる' },
+      { id: 'vault-3', content: '認証メソッドを設定できる' },
+      { id: 'vault-4', content: 'ポリシーでアクセス制御ができる' },
+      { id: 'vault-5', content: '動的シークレットを使用できる' },
+      { id: 'vault-6', content: 'KubernetesとVaultを連携できる' },
+      { id: 'vault-7', content: 'シークレットのローテーションを設定できる' },
+    ]
+  },
+  {
+    id: 'service-mesh', name: 'Service Mesh', tier: 4, category: 'devops', description: 'Istio、Linkerdなどを使ったマイクロサービス間通信の管理。トラフィック制御、セキュリティ、可観測性を提供する', icon: 'mesh', pointValue: 20, connections: ['monitoring', 'argocd'],
+    learningItems: [
+      { id: 'mesh-1', content: 'Service Meshの概念を理解する' },
+      { id: 'mesh-2', content: 'Istioをインストールできる' },
+      { id: 'mesh-3', content: 'サイドカーパターンを理解する' },
+      { id: 'mesh-4', content: 'トラフィック管理（VirtualService等）を設定できる' },
+      { id: 'mesh-5', content: 'mTLSでサービス間通信を暗号化できる' },
+      { id: 'mesh-6', content: 'サーキットブレーカーを設定できる' },
+      { id: 'mesh-7', content: 'Kialiで可視化できる' },
+      { id: 'mesh-8', content: 'カナリアデプロイを実装できる' },
+    ]
+  },
 
   {
-    id: 'helm', name: 'Helm', tier: 5, category: 'infrastructure', description: 'K8sパッケージ', icon: 'helm', pointValue: 15, connections: [],
+    id: 'helm', name: 'Helm', tier: 5, category: 'devops', description: 'Kubernetesのパッケージマネージャー。Chartを使ってアプリケーションの定義、インストール、アップグレードを管理する', icon: 'helm', pointValue: 15, connections: [],
     learningItems: [
       { id: 'helm-1', content: 'Helmの概念を理解する' },
       { id: 'helm-2', content: 'Chartをインストール・アップグレードできる' },
@@ -1191,7 +1338,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'terraform', name: 'Terraform', tier: 5, category: 'infrastructure', description: 'IaC', icon: 'terraform', pointValue: 25, connections: [],
+    id: 'terraform', name: 'Terraform', tier: 5, category: 'devops', description: 'HashiCorp製のInfrastructure as Codeツール。HCL言語でクラウドリソースを宣言的に定義し、マルチクラウド環境を管理する', icon: 'terraform', pointValue: 25, connections: [],
     learningItems: [
       { id: 'tf-1', content: 'HCL構文を理解する' },
       { id: 'tf-2', content: 'リソースとデータソースを定義できる' },
@@ -1205,7 +1352,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'monitoring', name: '監視', tier: 5, category: 'infrastructure', description: 'Prometheus', icon: 'monitoring', pointValue: 20, connections: [],
+    id: 'monitoring', name: '監視', tier: 5, category: 'devops', description: 'Prometheus、Grafana、Datadogなどを使ったシステム監視。メトリクス収集、アラート設定、ダッシュボード作成を行う', icon: 'monitoring', pointValue: 20, connections: [],
     learningItems: [
       { id: 'mon-1', content: '監視の種類（メトリクス、ログ、トレース）を理解する' },
       { id: 'mon-2', content: 'Prometheusを設定できる' },
@@ -1218,7 +1365,7 @@ const allSkillsData: SkillData[] = [
     ]
   },
   {
-    id: 'argocd', name: 'ArgoCD', tier: 5, category: 'infrastructure', description: 'GitOps', icon: 'argocd', pointValue: 20, connections: [],
+    id: 'argocd', name: 'ArgoCD', tier: 5, category: 'devops', description: 'Kubernetes向けのGitOps CDツール。Gitリポジトリをソースとして、宣言的なアプリケーションデプロイを自動化する', icon: 'argocd', pointValue: 20, connections: ['sre'],
     learningItems: [
       { id: 'argo-1', content: 'GitOpsの概念を理解する' },
       { id: 'argo-2', content: 'ArgoCDをインストール・設定できる' },
@@ -1228,6 +1375,20 @@ const allSkillsData: SkillData[] = [
       { id: 'argo-6', content: 'マルチクラスター管理ができる' },
       { id: 'argo-7', content: 'RBAC を設定できる' },
       { id: 'argo-8', content: 'App of Appsパターンを理解する' },
+    ]
+  },
+  {
+    id: 'sre', name: 'SRE', tier: 5, category: 'devops', description: 'Site Reliability Engineering。システムの信頼性、可用性、パフォーマンスを維持するための実践的アプローチとエンジニアリング文化', icon: 'sre', pointValue: 25, connections: [],
+    learningItems: [
+      { id: 'sre-1', content: 'SREの原則と文化を理解する' },
+      { id: 'sre-2', content: 'SLI/SLO/SLAを定義・運用できる' },
+      { id: 'sre-3', content: 'エラーバジェットを管理できる' },
+      { id: 'sre-4', content: 'トイル（toil）を削減できる' },
+      { id: 'sre-5', content: 'インシデント対応プロセスを設計できる' },
+      { id: 'sre-6', content: 'ポストモーテムを実施できる' },
+      { id: 'sre-7', content: 'カオスエンジニアリングを実践できる' },
+      { id: 'sre-8', content: 'キャパシティプランニングができる' },
+      { id: 'sre-9', content: 'オンコール体制を設計・運用できる' },
     ]
   },
   {
@@ -1252,6 +1413,7 @@ export const CATEGORY_NAMES: Record<string, string> = {
   frontend: 'フロントエンド',
   backend: 'バックエンド',
   infrastructure: 'インフラ',
+  devops: 'DevOps',
 };
 
 export const getSkillsByCategory = (category: string) =>

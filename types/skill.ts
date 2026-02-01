@@ -1,4 +1,4 @@
-export type SkillCategory = 'frontend' | 'backend' | 'infrastructure';
+export type SkillCategory = 'frontend' | 'backend' | 'infrastructure' | 'devops';
 
 export type SkillTier = 1 | 2 | 3 | 4 | 5;
 

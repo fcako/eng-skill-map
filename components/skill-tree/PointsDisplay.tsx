@@ -2,16 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
+import { getAllSkills } from '@/data/skills';
 
 export function PointsDisplay() {
   const [mounted, setMounted] = useState(false);
-  const { getTotalPoints } = useSkillTreeStore();
+  const [showStats, setShowStats] = useState(false);
+  const { getTotalPoints, unlockedSkills, completedLearningItems } = useSkillTreeStore();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const totalPoints = mounted ? getTotalPoints() : 0;
+  const allSkills = getAllSkills();
+  const totalSkillCount = allSkills.length;
+  const masteredSkillCount = mounted ? unlockedSkills.length : 0;
+  const totalLearningItems = allSkills.reduce((sum, skill) => sum + skill.learningItems.length, 0);
+  const completedItemCount = mounted ? completedLearningItems.length : 0;
 
   // レベル計算: Lv1→2は1pt、Lv2→3は2pt、...
   let overallLevel = 1;
@@ -22,34 +29,149 @@ export function PointsDisplay() {
   }
   const pointsForNext = overallLevel;
   const levelProgress = pointsForNext > 0 ? (pointsInLevel / pointsForNext) * 100 : 0;
+  const pointsNeeded = pointsForNext - pointsInLevel;
 
   return (
-    <div className="flex items-center gap-6">
-      {/* User avatar placeholder */}
-      <div className="relative">
-        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xl font-bold text-white border-2 border-purple-400">
-          U
+    <>
+      <div className="flex items-center gap-2 sm:gap-6">
+        {/* User avatar */}
+        <div className="relative">
+          <button
+            onClick={() => setShowStats(true)}
+            className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center border-2 border-gray-500 overflow-hidden hover:border-gray-400 transition-colors"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-7 h-7 sm:w-10 sm:h-10 text-gray-400 translate-y-1"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M12 14c-6 0-8 3-8 6v1h16v-1c0-3-2-6-8-6z" />
+            </svg>
+          </button>
+          <div className="absolute -bottom-1 -right-1 bg-amber-500 text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 rounded-full text-black pointer-events-none">
+            Lv.{overallLevel}
+          </div>
         </div>
-        <div className="absolute -bottom-1 -right-1 bg-amber-500 text-xs font-bold px-2 py-0.5 rounded-full text-black">
-          Lv.{overallLevel}
+
+        {/* Next level progress - デスクトップのみ詳細表示 */}
+        <div className="hidden sm:flex flex-col">
+          <div className="flex items-baseline gap-1">
+            <span className="text-xl font-bold text-amber-400">{pointsInLevel}</span>
+            <span className="text-sm text-gray-500">/ {pointsForNext} pt</span>
+          </div>
+
+          <div className="w-36 h-2.5 bg-gray-700 rounded-full overflow-hidden mt-1">
+            <div
+              className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500"
+              style={{ width: `${levelProgress}%` }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Next level progress */}
-      <div className="flex flex-col">
-        <div className="flex items-baseline gap-1">
-          <span className="text-xl font-bold text-amber-400">{pointsInLevel}</span>
-          <span className="text-sm text-gray-500">/ {pointsForNext} pt</span>
-        </div>
-
-        <div className="w-36 h-2.5 bg-gray-700 rounded-full overflow-hidden mt-1">
+      {/* Stats Modal */}
+      {showStats && (
+        <>
+          {/* Overlay */}
           <div
-            className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500"
-            style={{ width: `${levelProgress}%` }}
+            className="fixed inset-0 bg-black/60 z-50"
+            onClick={() => setShowStats(false)}
           />
-        </div>
 
-      </div>
-    </div>
+          {/* Modal */}
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[320px] sm:w-[380px] bg-[var(--background-secondary)] border border-gray-700 rounded-2xl p-6 shadow-2xl">
+            {/* Close button */}
+            <button
+              onClick={() => setShowStats(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-white"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center border-2 border-gray-500 overflow-hidden">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-12 h-12 text-gray-400 translate-y-1"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M12 14c-6 0-8 3-8 6v1h16v-1c0-3-2-6-8-6z" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-white">Level {overallLevel}</div>
+                <div className="text-gray-400 text-sm">エンジニア見習い</div>
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="space-y-4">
+              {/* Total Points */}
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">獲得ポイント</span>
+                  <span className="text-amber-400 font-bold text-lg">{totalPoints} pt</span>
+                </div>
+              </div>
+
+              {/* Mastered Skills */}
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">マスタースキル</span>
+                  <span className="text-green-400 font-bold">
+                    {masteredSkillCount} / {totalSkillCount}
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-green-500 to-green-400 transition-all duration-500"
+                    style={{ width: `${(masteredSkillCount / totalSkillCount) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Completed Learning Items */}
+              <div className="bg-gray-800/50 rounded-lg p-4">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400 text-sm">修得項目</span>
+                  <span className="text-blue-400 font-bold">
+                    {completedItemCount} / {totalLearningItems}
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
+                    style={{ width: `${(completedItemCount / totalLearningItems) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Next Level */}
+              <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                <div className="text-amber-400 text-sm mb-2">次のレベルまで</div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-amber-400">{pointsNeeded}</span>
+                  <span className="text-gray-400">ポイント</span>
+                </div>
+                <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden mt-3">
+                  <div
+                    className="h-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-500"
+                    style={{ width: `${levelProgress}%` }}
+                  />
+                </div>
+                <div className="text-gray-500 text-xs mt-2">
+                  修得項目をチェックしてポイントを獲得しよう
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }

@@ -9,7 +9,7 @@ export const useSkillTreeStore = create<SkillTreeStore>()(
       // State
       unlockedSkills: [],
       selectedSkillId: null,
-      visibleCategories: ['frontend', 'backend', 'infrastructure'],
+      visibleCategories: ['frontend', 'backend', 'infrastructure', 'devops'],
       completedLearningItems: [],
 
       // Actions
@@ -96,6 +96,19 @@ export const useSkillTreeStore = create<SkillTreeStore>()(
     }),
     {
       name: 'skill-tree-storage',
+      version: 1,
+      migrate: (persistedState, version) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const state = persistedState as any;
+        if (version === 0) {
+          // v0からv1へのマイグレーション: devopsをvisibleCategoriesに追加
+          const visibleCategories = state.visibleCategories || [];
+          if (!visibleCategories.includes('devops')) {
+            state.visibleCategories = [...visibleCategories, 'devops'];
+          }
+        }
+        return state;
+      },
     }
   )
 );

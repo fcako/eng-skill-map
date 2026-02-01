@@ -8,37 +8,41 @@ import { CategoryLegend } from './CategoryLegend';
 export function SkillTreeContainer() {
   return (
     <div className="h-screen flex flex-col bg-[var(--background)]">
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-[var(--background-secondary)]">
-        <div className="flex items-center gap-8">
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <svg
-              className="w-6 h-6 text-amber-400"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            Eng Skill Map
+      {/* Header - 固定、セーフエリア対応 */}
+      <header
+        className="flex-shrink-0 flex flex-col sm:flex-row items-start sm:items-center justify-between px-3 sm:px-6 py-2 sm:py-4 border-b border-gray-800 bg-[var(--background-secondary)] gap-2 sm:gap-0"
+        style={{ paddingTop: 'max(env(safe-area-inset-top), 8px)' }}
+      >
+        <div className="flex items-center gap-2 sm:gap-8 w-full sm:w-auto justify-between sm:justify-start">
+          <h1 className="text-base sm:text-xl font-bold text-white">
+            <span className="hidden sm:inline">Engineer Skill Map</span>
+            <span className="sm:hidden">Eng Skill Map</span>
           </h1>
-          <CategoryLegend />
+          <div className="sm:hidden">
+            <PointsDisplay />
+          </div>
         </div>
-        <PointsDisplay />
+        <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+          <CategoryLegend />
+          <div className="hidden sm:block">
+            <PointsDisplay />
+          </div>
+        </div>
       </header>
 
       {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Skill tree canvas */}
         <main className="flex-1 overflow-auto">
           <SkillTreeCanvas />
         </main>
 
-        {/* Detail panel */}
+        {/* Detail panel - モバイルではオーバーレイ */}
         <SkillDetailPanel />
       </div>
 
-      {/* Footer hint */}
-      <footer className="px-6 py-2 border-t border-gray-800 bg-[var(--background-secondary)] text-xs text-gray-500 flex items-center justify-between">
+      {/* Footer hint - デスクトップのみ */}
+      <footer className="hidden sm:flex px-6 py-2 border-t border-gray-800 bg-[var(--background-secondary)] text-xs text-gray-500 items-center justify-between">
         <div>
           クリック: 詳細表示 | 修得項目をチェックしてスキルをマスター
         </div>

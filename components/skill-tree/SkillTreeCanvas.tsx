@@ -11,11 +11,19 @@ const MIN_SCALE = 0.3;
 const MAX_SCALE = 1.5;
 const SCALE_STEP = 0.1;
 
+// 2点間の距離を計算
+const getDistance = (touch1: React.Touch, touch2: React.Touch): number => {
+  const dx = touch1.clientX - touch2.clientX;
+  const dy = touch1.clientY - touch2.clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+};
+
 export function SkillTreeCanvas() {
   const baseSkills = useMemo(() => getAllSkills(), []);
   const { selectSkill, visibleCategories } = useSkillTreeStore();
   const [scale, setScale] = useState(1.0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lastPinchDistance = useRef<number | null>(null);
 
   // スケールに応じてノードの位置を再計算（ノードサイズは固定）
   const skills: Skill[] = useMemo(() => {
@@ -58,6 +66,90 @@ export function SkillTreeCanvas() {
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setScale(parseFloat(e.target.value));
   };
+
+  // 初期表示時にマップ中心を画面中央に配置
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // コンテナサイズを取得
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
+    // MAP_CENTERが画面中央に来るようにスクロール位置を計算
+    const scrollX = MAP_CENTER.x - containerWidth / 2;
+    const scrollY = MAP_CENTER.y - containerHeight / 2;
+
+    container.scrollTo(scrollX, scrollY);
+  }, []);
+
+  // ピンチズーム対応（タッチ + ホイール）
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // タッチイベント（2本指ピンチ）
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        lastPinchDistance.current = getDistance(
+          e.touches[0] as unknown as React.Touch,
+          e.touches[1] as unknown as React.Touch
+        );
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && lastPinchDistance.current !== null) {
+        e.preventDefault();
+        const currentDistance = getDistance(
+          e.touches[0] as unknown as React.Touch,
+          e.touches[1] as unknown as React.Touch
+        );
+        const delta = currentDistance - lastPinchDistance.current;
+
+        // 感度調整（距離の変化量に応じてスケールを変更）
+        const scaleDelta = delta * 0.005;
+
+        setScale((prev) => {
+          const newScale = prev + scaleDelta;
+          return Math.min(MAX_SCALE, Math.max(MIN_SCALE, newScale));
+        });
+
+        lastPinchDistance.current = currentDistance;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      lastPinchDistance.current = null;
+    };
+
+    // ホイールイベント（Ctrl/Cmd + スクロールまたはトラックパッドピンチ）
+    const handleWheel = (e: WheelEvent) => {
+      // ctrlKeyはトラックパッドのピンチジェスチャーでもtrueになる
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const scaleDelta = -e.deltaY * 0.01;
+        setScale((prev) => {
+          const newScale = prev + scaleDelta;
+          return Math.min(MAX_SCALE, Math.max(MIN_SCALE, newScale));
+        });
+      }
+    };
+
+    // passive: false でpreventDefaultを有効にする
+    container.addEventListener('touchstart', handleTouchStart, { passive: false });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd);
+    container.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+      container.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
 
   // キーボード操作
   useEffect(() => {
@@ -129,20 +221,71 @@ export function SkillTreeCanvas() {
   const getScaledSkillById = (id: string) => skills.find((s) => s.id === id);
 
   // Calculate canvas size based on skill positions
-  const canvasSize = useMemo(() => {
-    if (skills.length === 0) return { width: 1400, height: 1400 };
+  const canvasBounds = useMemo(() => {
+    if (skills.length === 0) return { minX: 0, minY: 0, maxX: 1400, maxY: 1400 };
 
-    const padding = 200;
+    const padding = 100;
     const xs = skills.map((s) => s.position.x);
     const ys = skills.map((s) => s.position.y);
-    const maxX = Math.max(...xs) + padding;
-    const maxY = Math.max(...ys) + padding + 80;
 
     return {
-      width: Math.max(1400, maxX),
-      height: Math.max(1400, maxY),
+      minX: Math.min(...xs) - padding,
+      minY: Math.min(...ys) - padding,
+      maxX: Math.max(...xs) + padding,
+      maxY: Math.max(...ys) + padding + 80,
     };
   }, [skills]);
+
+  const canvasSize = useMemo(() => {
+    return {
+      width: canvasBounds.maxX,
+      height: canvasBounds.maxY,
+    };
+  }, [canvasBounds]);
+
+  // スクロール範囲を制限
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const containerWidth = container.clientWidth;
+      const containerHeight = container.clientHeight;
+
+      // スクロール可能な範囲を計算（マップの境界から画面半分のマージン）
+      const minScrollX = Math.max(0, canvasBounds.minX - containerWidth / 3);
+      const maxScrollX = Math.max(0, canvasBounds.maxX - containerWidth * 2 / 3);
+      const minScrollY = Math.max(0, canvasBounds.minY - containerHeight / 3);
+      const maxScrollY = Math.max(0, canvasBounds.maxY - containerHeight * 2 / 3);
+
+      let needsCorrection = false;
+      let newScrollX = container.scrollLeft;
+      let newScrollY = container.scrollTop;
+
+      if (container.scrollLeft < minScrollX) {
+        newScrollX = minScrollX;
+        needsCorrection = true;
+      } else if (container.scrollLeft > maxScrollX) {
+        newScrollX = maxScrollX;
+        needsCorrection = true;
+      }
+
+      if (container.scrollTop < minScrollY) {
+        newScrollY = minScrollY;
+        needsCorrection = true;
+      } else if (container.scrollTop > maxScrollY) {
+        newScrollY = maxScrollY;
+        needsCorrection = true;
+      }
+
+      if (needsCorrection) {
+        container.scrollTo(newScrollX, newScrollY);
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [canvasBounds]);
 
   return (
     <div
@@ -150,16 +293,16 @@ export function SkillTreeCanvas() {
       className="relative w-full h-full overflow-auto bg-[var(--background)]"
     >
       {/* Scale controls */}
-      <div className="fixed bottom-20 left-6 z-20 flex flex-col items-center gap-2 bg-gray-800/80 rounded-lg p-3 backdrop-blur-sm">
+      <div className="fixed bottom-4 sm:bottom-20 left-3 sm:left-6 z-20 flex flex-row sm:flex-col items-center gap-2 bg-gray-800/80 rounded-lg p-2 sm:p-3 backdrop-blur-sm">
         <button
-          onClick={handleScaleUp}
-          className="w-8 h-8 flex items-center justify-center text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors"
-          title="広げる"
+          onClick={handleScaleDown}
+          className="w-8 h-8 flex items-center justify-center text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors sm:order-4"
+          title="縮める"
         >
-          +
+          -
         </button>
 
-        {/* スライダー（縦向き） */}
+        {/* スライダー（モバイル:横向き、デスクトップ:縦向き） */}
         <input
           type="range"
           min={MIN_SCALE}
@@ -167,7 +310,7 @@ export function SkillTreeCanvas() {
           step={0.05}
           value={scale}
           onChange={handleSliderChange}
-          className="w-24 h-2 appearance-none bg-gray-600 rounded-lg cursor-pointer rotate-[-90deg] my-8"
+          className="w-20 sm:w-24 h-2 appearance-none bg-gray-600 rounded-lg cursor-pointer sm:rotate-[-90deg] sm:my-8"
           style={{
             accentColor: '#3b82f6',
           }}
@@ -176,22 +319,22 @@ export function SkillTreeCanvas() {
 
         <button
           onClick={handleScaleReset}
-          className="w-10 h-6 flex items-center justify-center text-xs text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+          className="w-10 h-6 flex items-center justify-center text-xs text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors sm:order-2"
           title="リセット"
         >
           {Math.round(scale * 100)}%
         </button>
         <button
-          onClick={handleScaleDown}
-          className="w-8 h-8 flex items-center justify-center text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors"
-          title="縮める"
+          onClick={handleScaleUp}
+          className="w-8 h-8 flex items-center justify-center text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors sm:order-1"
+          title="広げる"
         >
-          -
+          +
         </button>
       </div>
 
-      {/* 操作方法 */}
-      <div className="fixed top-28 left-4 z-20 bg-gray-800/80 rounded-lg p-3 backdrop-blur-sm text-gray-400 text-xs">
+      {/* 操作方法 - デスクトップのみ */}
+      <div className="hidden sm:block fixed top-28 left-4 z-20 bg-gray-800/80 rounded-lg p-3 backdrop-blur-sm text-gray-400 text-xs">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <div className="flex flex-col items-center">

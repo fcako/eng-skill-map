@@ -15,9 +15,10 @@ export function SkillDetailPanel() {
   const skill = selectedSkillId ? getSkillById(selectedSkillId) : null;
   const progress = skill ? getSkillProgress(skill.id) : { completed: 0, total: 0, percentage: 0 };
 
+  // モバイルでスキル未選択時は非表示
   if (!skill) {
     return (
-      <div className="w-80 bg-[var(--background-secondary)] border-l border-gray-700 p-6 flex flex-col items-center justify-center text-center">
+      <div className="hidden sm:flex w-80 bg-[var(--background-secondary)] border-l border-gray-700 p-6 flex-col items-center justify-center text-center">
         <div className="text-gray-500 text-sm">
           スキルをクリックして詳細を表示
         </div>
@@ -41,65 +42,81 @@ export function SkillDetailPanel() {
     5: 'bg-red-500',
   };
 
-  return (
-    <div className="w-80 bg-[var(--background-secondary)] border-l border-gray-700 flex flex-col h-full">
-      {/* Fixed header: close button + skill name */}
-      <div className="flex-shrink-0 p-6 pb-4">
-        <button
-          onClick={() => selectSkill(null)}
-          className="float-right text-gray-500 hover:text-white"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </button>
+  const categoryColors: Record<string, string> = {
+    frontend: 'bg-blue-500/20 text-blue-300 border border-blue-500/40',
+    backend: 'bg-purple-500/20 text-purple-300 border border-purple-500/40',
+    infrastructure: 'bg-orange-500/20 text-orange-300 border border-orange-500/40',
+    devops: 'bg-green-500/20 text-green-300 border border-green-500/40',
+  };
 
-        <div className="flex items-center gap-4">
-          <div
-            className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold transition-all ${
-              progress.percentage === 100
-                ? 'bg-amber-900/50 border-2 border-amber-400 text-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.4)]'
-                : progress.completed > 0
-                ? 'bg-blue-900/50 border-2 border-blue-400 text-blue-400'
-                : 'bg-gray-800 border-2 border-gray-600 text-gray-400'
-            }`}
+  return (
+    <>
+      {/* モバイル用オーバーレイ背景 */}
+      <div
+        className="sm:hidden fixed inset-0 bg-black/60 z-40"
+        onClick={() => selectSkill(null)}
+      />
+
+      <div className="fixed inset-x-0 bottom-0 z-50 sm:relative sm:inset-auto sm:w-80 bg-[var(--background-secondary)] border-t sm:border-t-0 sm:border-l border-gray-700 flex flex-col max-h-[80vh] sm:max-h-none sm:h-full rounded-t-2xl sm:rounded-none">
+        {/* Fixed header: close button + skill name */}
+        <div className="flex-shrink-0 p-4 sm:p-6 pb-3 sm:pb-4">
+          <button
+            onClick={() => selectSkill(null)}
+            className="float-right text-gray-500 hover:text-white p-1"
           >
-            {progress.percentage === 100 ? (
-              <span>&#9733;</span>
-            ) : (
-              skill.name.charAt(0)
-            )}
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-white">{skill.name}</h2>
-            <span
-              className={`px-2 py-0.5 rounded text-xs font-medium ${tierColors[skill.tier]} text-white`}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 sm:h-5 sm:w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
             >
-              Tier {skill.tier} - {tierLabels[skill.tier]}
-            </span>
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {/* モバイル用ドラッグハンドル */}
+          <div className="sm:hidden flex justify-center mb-3">
+            <div className="w-10 h-1 bg-gray-600 rounded-full" />
+          </div>
+
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div
+              className={`flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-base sm:text-lg font-bold transition-all ${
+                progress.percentage === 100
+                  ? 'bg-amber-900/50 border-2 border-amber-400 text-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.4)]'
+                  : progress.completed > 0
+                  ? 'bg-blue-900/50 border-2 border-blue-400 text-blue-400'
+                  : 'bg-gray-800 border-2 border-gray-600 text-gray-400'
+              }`}
+            >
+              {progress.percentage === 100 ? (
+                <span>&#9733;</span>
+              ) : (
+                skill.name.charAt(0)
+              )}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-bold text-white">{skill.name}</h2>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded ${categoryColors[skill.category]}`}>
+                  {CATEGORY_NAMES[skill.category]}
+                </span>
+              </div>
+              <span
+                className={`px-2 py-0.5 rounded text-xs font-medium ${tierColors[skill.tier]} text-white`}
+              >
+                Tier {skill.tier} - {tierLabels[skill.tier]}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto px-6 pb-6">
-        {/* Category */}
-        <div className="mb-4">
-          <span className="text-xs text-gray-500">カテゴリ</span>
-          <div className="text-sm text-gray-300">
-            {CATEGORY_NAMES[skill.category]}
-          </div>
-        </div>
-
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6">
         {/* Description */}
         <div className="mb-4">
           <span className="text-xs text-gray-500">説明</span>
@@ -190,5 +207,6 @@ export function SkillDetailPanel() {
         )}
       </div>
     </div>
+    </>
   );
 }

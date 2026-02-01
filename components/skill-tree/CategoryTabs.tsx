@@ -7,7 +7,7 @@ import { CATEGORY_NAMES, SKILLS } from '@/data/skills';
 export function CategoryTabs() {
   const { visibleCategories, toggleCategory, unlockedSkills } = useSkillTreeStore();
 
-  const categories: SkillCategory[] = ['frontend', 'backend', 'infrastructure'];
+  const categories: SkillCategory[] = ['frontend', 'backend', 'infrastructure', 'devops'];
 
   const getCategoryStats = (category: SkillCategory) => {
     const total = SKILLS.filter((s) => s.category === category).length;
@@ -19,14 +19,16 @@ export function CategoryTabs() {
 
   const categoryColors: Record<SkillCategory, string> = {
     frontend: 'border-blue-500 text-blue-400',
-    backend: 'border-green-500 text-green-400',
+    backend: 'border-purple-500 text-purple-400',
     infrastructure: 'border-amber-500 text-amber-400',
+    devops: 'border-green-500 text-green-400',
   };
 
   const categoryBgColors: Record<SkillCategory, string> = {
     frontend: 'bg-blue-500/20',
-    backend: 'bg-green-500/20',
+    backend: 'bg-purple-500/20',
     infrastructure: 'bg-amber-500/20',
+    devops: 'bg-green-500/20',
   };
 
   return (
