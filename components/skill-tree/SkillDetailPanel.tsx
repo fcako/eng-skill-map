@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useSkillTreeStore } from '@/store/skillTreeStore';
 import { getSkillById, CATEGORY_NAMES } from '@/data/skills';
+import { ResourceType } from '@/types/skill';
 
 export function SkillDetailPanel() {
   const {
@@ -58,6 +59,14 @@ export function SkillDetailPanel() {
     backend: 'bg-purple-500/20 text-purple-300 border border-purple-500/40',
     infrastructure: 'bg-orange-500/20 text-orange-300 border border-orange-500/40',
     devops: 'bg-green-500/20 text-green-300 border border-green-500/40',
+  };
+
+  const resourceTypeConfig: Record<ResourceType, { icon: string; label: string }> = {
+    book: { icon: '\u{1F4DA}', label: '書籍' },
+    tutorial: { icon: '\u{1F310}', label: 'チュートリアル' },
+    documentation: { icon: '\u{1F4D6}', label: '公式ドキュメント' },
+    course: { icon: '\u{1F393}', label: 'コース' },
+    video: { icon: '\u{1F3AC}', label: '動画' },
   };
 
   return (
@@ -210,6 +219,51 @@ export function SkillDetailPanel() {
                         {item.content}
                       </span>
                     </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+
+        {/* Resources */}
+        {skill.resources && skill.resources.length > 0 && (
+          <div className="mt-6 pt-4 border-t border-gray-700">
+            <h3 className="text-xs text-gray-500 mb-3">参考リソース</h3>
+            <ul className="space-y-2">
+              {skill.resources.map((resource, index) => {
+                const config = resourceTypeConfig[resource.type];
+                return (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="flex-shrink-0 text-sm">{config.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[10px] text-gray-500">{config.label}</span>
+                      {resource.url ? (
+                        <a
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-blue-400 hover:text-blue-300 hover:underline truncate"
+                        >
+                          {resource.title}
+                          <svg
+                            className="inline-block w-3 h-3 ml-1 opacity-60"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </a>
+                      ) : (
+                        <span className="block text-sm text-gray-300">{resource.title}</span>
+                      )}
+                    </div>
                   </li>
                 );
               })}

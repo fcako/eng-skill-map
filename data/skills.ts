@@ -1,4 +1,4 @@
-import { Skill, SkillCategory, LearningItem } from '@/types/skill';
+import { Skill, SkillCategory, LearningItem, Resource } from '@/types/skill';
 
 // ===========================================
 // 配置計算ロジック（統合マップ用）
@@ -59,6 +59,7 @@ interface SkillData {
   pointValue: number;
   connections: string[];
   learningItems: LearningItem[];
+  resources?: Resource[];
 }
 
 // 親ノードを探す
@@ -237,6 +238,9 @@ const allSkillsData: SkillData[] = [
       { id: 'html-5', content: 'WAI-ARIAの基本属性を理解する' },
       { id: 'html-6', content: 'iframeとembedの適切な使用法を理解する' },
       { id: 'html-7', content: 'Webコンポーネントの基礎を理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'MDN Web Docs「HTML の学習」', url: 'https://developer.mozilla.org/ja/docs/Learn/HTML' },
     ]
   },
   {
@@ -250,6 +254,9 @@ const allSkillsData: SkillData[] = [
       { id: 'css-6', content: ' 擬似クラス・擬似要素を理解する' },
       { id: 'css-7', content: 'BEMやCSS設計手法を理解する' },
       { id: 'css-8', content: 'メディアクエリの基礎を理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'MDN Web Docs「CSS の学習」', url: 'https://developer.mozilla.org/ja/docs/Learn/CSS' },
     ]
   },
   {
@@ -263,6 +270,9 @@ const allSkillsData: SkillData[] = [
       { id: 'js-6', content: '配列の高階関数（map, filter, reduce）を使いこなす' },
       { id: 'js-7', content: 'エラーハンドリングを適切に実装できる' },
       { id: 'js-8', content: 'モジュールシステム（import/export）を理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'JavaScript Primer', url: 'https://jsprimer.net/' },
     ]
   },
 
@@ -277,6 +287,9 @@ const allSkillsData: SkillData[] = [
       { id: 'a11y-6', content: 'フォーカス管理を実装できる' },
       { id: 'a11y-7', content: 'アクセシビリティテストツールを使用できる' },
       { id: 'a11y-8', content: 'ライブリージョンを実装できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'W3C「WCAG 2.1 解説書」', url: 'https://waic.jp/translations/WCAG21/' },
     ]
   },
   {
@@ -289,6 +302,9 @@ const allSkillsData: SkillData[] = [
       { id: 'flex-5', content: 'align-selfで個別アイテムを調整できる' },
       { id: 'flex-6', content: 'gapプロパティを活用できる' },
       { id: 'flex-7', content: '一般的なUIパターンをFlexboxで実装できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Flexbox Froggy', url: 'https://flexboxfroggy.com/' },
     ]
   },
   {
@@ -301,6 +317,9 @@ const allSkillsData: SkillData[] = [
       { id: 'grid-5', content: 'grid-auto-flowで自動配置を制御できる' },
       { id: 'grid-6', content: 'サブグリッドを理解する' },
       { id: 'grid-7', content: '複雑なレイアウトをGridで実装できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Grid Garden', url: 'https://cssgridgarden.com/' },
     ]
   },
   {
@@ -313,6 +332,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sass-5', content: 'パーシャルとモジュール分割ができる' },
       { id: 'sass-6', content: '関数を定義・使用できる' },
       { id: 'sass-7', content: '条件分岐とループを使用できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Sass公式ドキュメント', url: 'https://sass-lang.com/documentation/' },
     ]
   },
   {
@@ -327,6 +349,9 @@ const allSkillsData: SkillData[] = [
       { id: 'ts-7', content: '条件型とmapped typesを理解する' },
       { id: 'ts-8', content: 'tsconfig.jsonを適切に設定できる' },
       { id: 'ts-9', content: '型定義ファイル（.d.ts）を作成できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'TypeScript公式Handbook', url: 'https://www.typescriptlang.org/docs/handbook/' },
     ]
   },
   {
@@ -340,6 +365,9 @@ const allSkillsData: SkillData[] = [
       { id: 'es6-6', content: 'Map, Set, WeakMap, WeakSetを使用できる' },
       { id: 'es6-7', content: 'Symbol とIteratorを理解する' },
       { id: 'es6-8', content: 'Optional chainingとNullish coalescingを使用できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'JavaScript Primer（ES2015以降）', url: 'https://jsprimer.net/' },
     ]
   },
   {
@@ -353,6 +381,9 @@ const allSkillsData: SkillData[] = [
       { id: 'browser-6', content: 'Intersection Observerを実装できる' },
       { id: 'browser-7', content: 'Web Storage APIの制限を理解する' },
       { id: 'browser-8', content: 'Geolocation APIを使用できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'MDN Web Docs「Web API」', url: 'https://developer.mozilla.org/ja/docs/Web/API' },
     ]
   },
   {
@@ -365,6 +396,9 @@ const allSkillsData: SkillData[] = [
       { id: 'resp-5', content: 'レスポンシブ画像（srcset, picture）を実装できる' },
       { id: 'resp-6', content: 'コンテナクエリを理解する' },
       { id: 'resp-7', content: 'タッチイベントに対応できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Google「レスポンシブ ウェブデザインの基本」', url: 'https://web.dev/responsive-web-design-basics/' },
     ]
   },
 
@@ -379,6 +413,9 @@ const allSkillsData: SkillData[] = [
       { id: 'tw-6', content: 'プラグインを追加・設定できる' },
       { id: 'tw-7', content: 'JITモードを理解する' },
       { id: 'tw-8', content: 'コンポーネントの抽出パターンを理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Tailwind CSS公式ドキュメント', url: 'https://tailwindcss.com/docs' },
     ]
   },
   {
@@ -394,6 +431,9 @@ const allSkillsData: SkillData[] = [
       { id: 'react-8', content: 'Error Boundaryを実装できる' },
       { id: 'react-9', content: 'Suspense とlazy loadingを使用できる' },
       { id: 'react-10', content: 'Server Componentsを理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'React公式チュートリアル', url: 'https://react.dev/learn/tutorial-tic-tac-toe' },
     ]
   },
   {
@@ -408,6 +448,9 @@ const allSkillsData: SkillData[] = [
       { id: 'vue-7', content: 'Vue Routerを設定・使用できる' },
       { id: 'vue-8', content: 'Piniaで状態管理ができる' },
       { id: 'vue-9', content: 'カスタムディレクティブを作成できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Vue.js公式ガイド', url: 'https://ja.vuejs.org/guide/introduction.html' },
     ]
   },
   {
@@ -422,6 +465,9 @@ const allSkillsData: SkillData[] = [
       { id: 'ng-7', content: 'リアクティブフォームを実装できる' },
       { id: 'ng-8', content: 'HTTPClientでAPI通信ができる' },
       { id: 'ng-9', content: 'Angular CLIを使いこなす' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Angular公式チュートリアル「Tour of Heroes」', url: 'https://angular.dev/tutorials/learn-angular' },
     ]
   },
   {
@@ -434,6 +480,9 @@ const allSkillsData: SkillData[] = [
       { id: 'svelte-5', content: 'ライフサイクル関数を理解する' },
       { id: 'svelte-6', content: 'トランジションとアニメーションを実装できる' },
       { id: 'svelte-7', content: 'SvelteKitの基礎を理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Svelte公式チュートリアル', url: 'https://svelte.dev/tutorial' },
     ]
   },
   {
@@ -447,6 +496,9 @@ const allSkillsData: SkillData[] = [
       { id: 'bundler-6', content: 'Tree shakingを理解する' },
       { id: 'bundler-7', content: '環境変数を設定・使用できる' },
       { id: 'bundler-8', content: 'バンドルサイズを分析・最適化できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Vite公式ガイド', url: 'https://ja.vitejs.dev/guide/' },
     ]
   },
   {
@@ -459,6 +511,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sb-5', content: 'MDXでドキュメントを作成できる' },
       { id: 'sb-6', content: 'インタラクションテストを実装できる' },
       { id: 'sb-7', content: 'Chromatic等でビジュアルテストができる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Storybook公式チュートリアル', url: 'https://storybook.js.org/tutorials/' },
     ]
   },
 
@@ -474,6 +529,9 @@ const allSkillsData: SkillData[] = [
       { id: 'next-7', content: 'ISRを理解し実装できる' },
       { id: 'next-8', content: 'メタデータAPIを使用できる' },
       { id: 'next-9', content: 'Vercelへのデプロイができる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Next.js公式チュートリアル「Learn Next.js」', url: 'https://nextjs.org/learn' },
     ]
   },
   {
@@ -487,6 +545,9 @@ const allSkillsData: SkillData[] = [
       { id: 'redux-6', content: 'Zustandで軽量な状態管理ができる' },
       { id: 'redux-7', content: 'Jotai/Recoilの原子型状態管理を理解する' },
       { id: 'redux-8', content: '状態の正規化を実装できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Redux公式チュートリアル「Redux Essentials」', url: 'https://redux.js.org/tutorials/essentials/part-1-overview-concepts' },
     ]
   },
   {
@@ -500,6 +561,9 @@ const allSkillsData: SkillData[] = [
       { id: 'nuxt-6', content: 'モジュールを追加・設定できる' },
       { id: 'nuxt-7', content: 'Nitroサーバーエンジンを理解する' },
       { id: 'nuxt-8', content: 'SSR/SSG/SPAモードを使い分けられる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Nuxt公式ドキュメント', url: 'https://nuxt.com/docs/getting-started/introduction' },
     ]
   },
   {
@@ -513,6 +577,9 @@ const allSkillsData: SkillData[] = [
       { id: 'test-fe-6', content: 'スナップショットテストを実装できる' },
       { id: 'test-fe-7', content: 'テストカバレッジを測定できる' },
       { id: 'test-fe-8', content: 'TDD/BDDの手法を実践できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Testing Library公式ドキュメント', url: 'https://testing-library.com/docs/' },
     ]
   },
   {
@@ -526,6 +593,9 @@ const allSkillsData: SkillData[] = [
       { id: 'pwa-6', content: 'バックグラウンド同期を実装できる' },
       { id: 'pwa-7', content: 'Workboxを使用できる' },
       { id: 'pwa-8', content: 'インストールプロンプトをカスタマイズできる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'web.dev「Progressive Web Apps」', url: 'https://web.dev/progressive-web-apps/' },
     ]
   },
   {
@@ -539,6 +609,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sec-fe-6', content: 'サニタイズ処理を適切に行える' },
       { id: 'sec-fe-7', content: 'セキュリティヘッダーを設定できる' },
       { id: 'sec-fe-8', content: 'サブリソース完全性（SRI）を理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'OWASP Cheat Sheet Series', url: 'https://cheatsheetseries.owasp.org/' },
     ]
   },
 
@@ -554,6 +627,9 @@ const allSkillsData: SkillData[] = [
       { id: 'perf-7', content: 'メモリリークを検出・修正できる' },
       { id: 'perf-8', content: 'レンダリングパフォーマンスを最適化できる' },
       { id: 'perf-9', content: 'Real User Monitoring（RUM）を導入できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'web.dev「Performance」', url: 'https://web.dev/performance/' },
     ]
   },
 
@@ -571,6 +647,9 @@ const allSkillsData: SkillData[] = [
       { id: 'node-6', content: 'pathモジュールを使用できる' },
       { id: 'node-7', content: '環境変数を適切に管理できる' },
       { id: 'node-8', content: 'プロセス管理（PM2等）を理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Node.js公式ガイド', url: 'https://nodejs.org/ja/docs/guides/' },
     ]
   },
   {
@@ -584,6 +663,9 @@ const allSkillsData: SkillData[] = [
       { id: 'py-6', content: '型ヒントを使用できる' },
       { id: 'py-7', content: 'asyncioで非同期処理ができる' },
       { id: 'py-8', content: 'パッケージを作成・公開できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Python公式チュートリアル', url: 'https://docs.python.org/ja/3/tutorial/' },
     ]
   },
   {
@@ -597,6 +679,9 @@ const allSkillsData: SkillData[] = [
       { id: 'go-6', content: 'Go Modulesでパッケージ管理ができる' },
       { id: 'go-7', content: '構造体とメソッドを使用できる' },
       { id: 'go-8', content: 'テストを書ける（testing パッケージ）' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'A Tour of Go', url: 'https://go.dev/tour/' },
     ]
   },
   {
@@ -610,7 +695,9 @@ const allSkillsData: SkillData[] = [
       { id: 'java-6', content: 'マルチスレッドプログラミングができる' },
       { id: 'java-7', content: 'Maven/Gradleでビルドできる' },
       { id: 'java-8', content: 'JVMの基礎を理解する' },
-      { id: 'java-9', content: 'Oracle Certified Java Programmer資格を取得する' },
+    ],
+    resources: [
+      { type: 'book', title: 'Effective Java 第3版' },
     ]
   },
 
@@ -624,6 +711,9 @@ const allSkillsData: SkillData[] = [
       { id: 'exp-5', content: '静的ファイルを配信できる' },
       { id: 'exp-6', content: 'テンプレートエンジンを使用できる' },
       { id: 'exp-7', content: 'セキュリティミドルウェア（helmet等）を設定できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Express公式ガイド', url: 'https://expressjs.com/ja/starter/installing.html' },
     ]
   },
   {
@@ -637,6 +727,9 @@ const allSkillsData: SkillData[] = [
       { id: 'nest-6', content: 'インターセプターを使用できる' },
       { id: 'nest-7', content: 'TypeORMまたはPrismaと統合できる' },
       { id: 'nest-8', content: 'Swagger/OpenAPIドキュメントを生成できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'NestJS公式ドキュメント', url: 'https://docs.nestjs.com/' },
     ]
   },
   {
@@ -650,6 +743,9 @@ const allSkillsData: SkillData[] = [
       { id: 'dj-6', content: 'Django REST Frameworkを使用できる' },
       { id: 'dj-7', content: 'ミドルウェアを理解し作成できる' },
       { id: 'dj-8', content: '管理サイトをカスタマイズできる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Django公式チュートリアル', url: 'https://docs.djangoproject.com/ja/5.0/intro/tutorial01/' },
     ]
   },
   {
@@ -663,6 +759,9 @@ const allSkillsData: SkillData[] = [
       { id: 'fast-6', content: 'バックグラウンドタスクを実装できる' },
       { id: 'fast-7', content: 'ミドルウェアを使用できる' },
       { id: 'fast-8', content: 'WebSocketを実装できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'FastAPI公式チュートリアル', url: 'https://fastapi.tiangolo.com/ja/tutorial/' },
     ]
   },
   {
@@ -675,6 +774,9 @@ const allSkillsData: SkillData[] = [
       { id: 'gin-5', content: 'JSONレスポンスを返却できる' },
       { id: 'gin-6', content: 'エラーハンドリングを実装できる' },
       { id: 'gin-7', content: 'グループルーティングを使用できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Gin公式ドキュメント', url: 'https://gin-gonic.com/docs/' },
     ]
   },
   {
@@ -688,6 +790,9 @@ const allSkillsData: SkillData[] = [
       { id: 'spring-6', content: 'アノテーションを理解し使用できる' },
       { id: 'spring-7', content: 'プロファイルで環境を切り替えられる' },
       { id: 'spring-8', content: 'Actuatorでヘルスチェックを実装できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Spring公式ガイド', url: 'https://spring.io/guides/gs/rest-service/' },
     ]
   },
   {
@@ -701,6 +806,9 @@ const allSkillsData: SkillData[] = [
       { id: 'rust-6', content: 'Cargoでパッケージ管理ができる' },
       { id: 'rust-7', content: 'async/awaitで非同期処理ができる' },
       { id: 'rust-8', content: 'マクロを理解する' },
+    ],
+    resources: [
+      { type: 'book', title: 'The Rust Programming Language', url: 'https://doc.rust-lang.org/book/' },
     ]
   },
   {
@@ -714,6 +822,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sql-6', content: 'トランザクションを理解する' },
       { id: 'sql-7', content: 'ウィンドウ関数を使用できる' },
       { id: 'sql-8', content: 'クエリの実行計画を読める' },
+    ],
+    resources: [
+      { type: 'book', title: 'SQLアンチパターン' },
     ]
   },
 
@@ -728,6 +839,9 @@ const allSkillsData: SkillData[] = [
       { id: 'rest-6', content: 'フィルタリング・ソートを実装できる' },
       { id: 'rest-7', content: 'バージョニング戦略を理解する' },
       { id: 'rest-8', content: 'HATEOASを理解する' },
+    ],
+    resources: [
+      { type: 'book', title: 'Web API: The Good Parts' },
     ]
   },
   {
@@ -741,6 +855,9 @@ const allSkillsData: SkillData[] = [
       { id: 'gql-6', content: '認証・認可を実装できる' },
       { id: 'gql-7', content: 'Apollo Server/Clientを使用できる' },
       { id: 'gql-8', content: 'フラグメントとディレクティブを使用できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'GraphQL公式チュートリアル', url: 'https://graphql.org/learn/' },
     ]
   },
   {
@@ -754,6 +871,9 @@ const allSkillsData: SkillData[] = [
       { id: 'pg-6', content: 'レプリケーションを設定できる' },
       { id: 'pg-7', content: 'バックアップ・リストアができる' },
       { id: 'pg-8', content: 'pg_statで統計情報を確認できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'PostgreSQL公式ドキュメント', url: 'https://www.postgresql.jp/document/' },
     ]
   },
   {
@@ -766,6 +886,9 @@ const allSkillsData: SkillData[] = [
       { id: 'mysql-5', content: 'スロークエリログを分析できる' },
       { id: 'mysql-6', content: '文字コードと照合順序を理解する' },
       { id: 'mysql-7', content: 'バックアップ・リストアができる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'MySQL公式ドキュメント', url: 'https://dev.mysql.com/doc/refman/8.0/ja/' },
     ]
   },
   {
@@ -779,6 +902,9 @@ const allSkillsData: SkillData[] = [
       { id: 'grpc-6', content: 'インターセプターを実装できる' },
       { id: 'grpc-7', content: 'gRPC-Webを使用できる' },
       { id: 'grpc-8', content: 'ロードバランシングを理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'gRPC公式Quick start', url: 'https://grpc.io/docs/languages/' },
     ]
   },
   {
@@ -791,6 +917,9 @@ const allSkillsData: SkillData[] = [
       { id: 'ws-5', content: '再接続ロジックを実装できる' },
       { id: 'ws-6', content: 'Socket.ioを使用できる' },
       { id: 'ws-7', content: 'スケールアウト時の課題を理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'MDN Web Docs「WebSocket API」', url: 'https://developer.mozilla.org/ja/docs/Web/API/WebSocket' },
     ]
   },
   {
@@ -804,6 +933,9 @@ const allSkillsData: SkillData[] = [
       { id: 'dp-6', content: 'SOLID原則を理解し適用できる' },
       { id: 'dp-7', content: 'DIコンテナを理解する' },
       { id: 'dp-8', content: 'アンチパターンを識別できる' },
+    ],
+    resources: [
+      { type: 'book', title: '増補改訂版 Java言語で学ぶデザインパターン入門' },
     ]
   },
   {
@@ -816,6 +948,9 @@ const allSkillsData: SkillData[] = [
       { id: 'apid-5', content: 'API バージョニング戦略を理解する' },
       { id: 'apid-6', content: 'ドキュメンテーションを作成できる' },
       { id: 'apid-7', content: '下位互換性を考慮した設計ができる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'OpenAPI公式仕様', url: 'https://spec.openapis.org/oas/latest.html' },
     ]
   },
 
@@ -831,6 +966,9 @@ const allSkillsData: SkillData[] = [
       { id: 'auth-7', content: 'MFA（多要素認証）を実装できる' },
       { id: 'auth-8', content: 'APIキー認証を実装できる' },
       { id: 'auth-9', content: 'パスキー/WebAuthnを理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Auth0「Identity Fundamentals」', url: 'https://auth0.com/docs/get-started' },
     ]
   },
   {
@@ -844,6 +982,9 @@ const allSkillsData: SkillData[] = [
       { id: 'orm-6', content: 'N+1問題を理解し対策できる' },
       { id: 'orm-7', content: '生SQLを実行できる' },
       { id: 'orm-8', content: 'シーディングを実装できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Prisma公式Quickstart', url: 'https://www.prisma.io/docs/getting-started/quickstart' },
     ]
   },
   {
@@ -857,6 +998,9 @@ const allSkillsData: SkillData[] = [
       { id: 'mongo-6', content: 'レプリカセットを理解する' },
       { id: 'mongo-7', content: 'シャーディングを理解する' },
       { id: 'mongo-8', content: 'Mongooseを使用できる' },
+    ],
+    resources: [
+      { type: 'course', title: 'MongoDB University', url: 'https://learn.mongodb.com/' },
     ]
   },
   {
@@ -870,6 +1014,9 @@ const allSkillsData: SkillData[] = [
       { id: 'redis-6', content: 'クラスターを理解する' },
       { id: 'redis-7', content: '永続化設定を理解する（RDB, AOF）' },
       { id: 'redis-8', content: 'セッションストアとして使用できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Redis公式ドキュメント', url: 'https://redis.io/docs/getting-started/' },
     ]
   },
   {
@@ -883,6 +1030,9 @@ const allSkillsData: SkillData[] = [
       { id: 'mq-6', content: 'メッセージの永続化を設定できる' },
       { id: 'mq-7', content: 'デッドレターキューを理解する' },
       { id: 'mq-8', content: '冪等性を考慮した設計ができる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Apache Kafka Quickstart', url: 'https://kafka.apache.org/quickstart' },
     ]
   },
   {
@@ -896,6 +1046,9 @@ const allSkillsData: SkillData[] = [
       { id: 'cache-6', content: 'CDNの設定ができる' },
       { id: 'cache-7', content: 'アプリケーションキャッシュを実装できる' },
       { id: 'cache-8', content: 'キャッシュヒット率を監視できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'web.dev「HTTP キャッシング」', url: 'https://web.dev/http-cache/' },
     ]
   },
   {
@@ -909,6 +1062,9 @@ const allSkillsData: SkillData[] = [
       { id: 'clean-6', content: '外部フレームワークからの独立性を確保できる' },
       { id: 'clean-7', content: 'テスタブルな設計ができる' },
       { id: 'clean-8', content: 'オニオンアーキテクチャを理解する' },
+    ],
+    resources: [
+      { type: 'book', title: 'Clean Architecture 達人に学ぶソフトウェアの構造と設計' },
     ]
   },
 
@@ -923,7 +1079,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sec-6', content: '入力バリデーションを徹底できる' },
       { id: 'sec-7', content: 'セキュリティヘッダーを設定できる' },
       { id: 'sec-8', content: '脆弱性診断ツールを使用できる' },
-      { id: 'sec-9', content: 'セキュリティ関連資格を取得する（情報処理安全確保支援士等）' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'OWASP Top Ten', url: 'https://owasp.org/www-project-top-ten/' },
     ]
   },
   {
@@ -937,6 +1095,9 @@ const allSkillsData: SkillData[] = [
       { id: 'test-be-6', content: 'APIテスト（Postman等）ができる' },
       { id: 'test-be-7', content: 'テストカバレッジを測定できる' },
       { id: 'test-be-8', content: '負荷テストができる' },
+    ],
+    resources: [
+      { type: 'book', title: 'テスト駆動開発（Kent Beck著）' },
     ]
   },
   {
@@ -951,6 +1112,9 @@ const allSkillsData: SkillData[] = [
       { id: 'ms-7', content: 'Sagaパターンを理解する' },
       { id: 'ms-8', content: '分散トレーシングを導入できる' },
       { id: 'ms-9', content: 'イベント駆動アーキテクチャを設計できる' },
+    ],
+    resources: [
+      { type: 'book', title: 'マイクロサービスアーキテクチャ（Sam Newman著）' },
     ]
   },
   {
@@ -965,6 +1129,9 @@ const allSkillsData: SkillData[] = [
       { id: 'ddd-7', content: 'ドメインイベントを設計できる' },
       { id: 'ddd-8', content: 'CQRSを理解する' },
       { id: 'ddd-9', content: 'イベントソーシングを理解する' },
+    ],
+    resources: [
+      { type: 'book', title: 'エリック・エヴァンスのドメイン駆動設計' },
     ]
   },
 
@@ -980,6 +1147,9 @@ const allSkillsData: SkillData[] = [
       { id: 'devops-b-4', content: 'モニタリングとログ管理の重要性を理解する' },
       { id: 'devops-b-5', content: 'DevOpsとアジャイルの関係を理解する' },
       { id: 'devops-b-6', content: 'DevOpsのメトリクス（DORA等）を理解する' },
+    ],
+    resources: [
+      { type: 'book', title: 'The DevOps ハンドブック' },
     ]
   },
   {
@@ -992,6 +1162,9 @@ const allSkillsData: SkillData[] = [
       { id: 'gitlab-5', content: 'Container Registryを使用できる' },
       { id: 'gitlab-6', content: 'GitLabセキュリティ機能（SAST/DAST）を活用できる' },
       { id: 'gitlab-7', content: 'GitLab Pagesでサイトを公開できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'GitLab公式ドキュメント', url: 'https://docs.gitlab.com/' },
     ]
   },
 
@@ -1008,7 +1181,9 @@ const allSkillsData: SkillData[] = [
       { id: 'linux-5', content: 'ユーザー・グループ管理ができる' },
       { id: 'linux-6', content: 'systemdでサービス管理ができる' },
       { id: 'linux-7', content: 'ログの確認方法を理解する（journalctl等）' },
-      { id: 'linux-8', content: 'LPIC/LinuC資格を取得する' },
+    ],
+    resources: [
+      { type: 'book', title: '新しいLinuxの教科書' },
     ]
   },
   {
@@ -1022,6 +1197,9 @@ const allSkillsData: SkillData[] = [
       { id: 'git-6', content: 'cherry-pickを使用できる' },
       { id: 'git-7', content: 'git-flowを理解する' },
       { id: 'git-8', content: '.gitignoreを適切に設定できる' },
+    ],
+    resources: [
+      { type: 'book', title: 'Pro Git', url: 'https://git-scm.com/book/ja/v2' },
     ]
   },
 
@@ -1035,6 +1213,9 @@ const allSkillsData: SkillData[] = [
       { id: 'shell-5', content: 'grep, sed, awkを使用できる' },
       { id: 'shell-6', content: '関数を定義・使用できる' },
       { id: 'shell-7', content: '環境変数を管理できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'GNU Bashマニュアル', url: 'https://www.gnu.org/software/bash/manual/' },
     ]
   },
   {
@@ -1047,7 +1228,9 @@ const allSkillsData: SkillData[] = [
       { id: 'net-5', content: 'ファイアウォールを設定できる' },
       { id: 'net-6', content: 'VPNを理解する' },
       { id: 'net-7', content: 'ネットワークデバッグ（ping, traceroute, netstat）ができる' },
-      { id: 'net-8', content: 'ネットワーク関連資格（CCNA等）を取得する' },
+    ],
+    resources: [
+      { type: 'book', title: 'マスタリング TCP/IP 入門編' },
     ]
   },
   {
@@ -1060,6 +1243,9 @@ const allSkillsData: SkillData[] = [
       { id: 'gh-5', content: 'GitHub Actionsの基礎を理解する' },
       { id: 'gh-6', content: 'コードレビューができる' },
       { id: 'gh-7', content: 'GitHubセキュリティ機能を活用できる' },
+    ],
+    resources: [
+      { type: 'course', title: 'GitHub Skills', url: 'https://skills.github.com/' },
     ]
   },
   {
@@ -1072,6 +1258,9 @@ const allSkillsData: SkillData[] = [
       { id: 'dns-5', content: 'DNSのトラブルシューティング（dig, nslookup）ができる' },
       { id: 'dns-6', content: 'DNSSECを理解する' },
       { id: 'dns-7', content: 'Route 53/Cloud DNSを使用できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Cloudflare「Learning DNS」', url: 'https://www.cloudflare.com/learning/dns/what-is-dns/' },
     ]
   },
   {
@@ -1084,6 +1273,9 @@ const allSkillsData: SkillData[] = [
       { id: 'cloud-5', content: '垂直/水平スケーリングを理解する' },
       { id: 'cloud-6', content: '責任共有モデルを理解する' },
       { id: 'cloud-7', content: 'マネージドサービスの利点を理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'AWS クラウドプラクティショナーの基礎', url: 'https://aws.amazon.com/jp/training/learn-about/cloud-practitioner/' },
     ]
   },
 
@@ -1098,6 +1290,9 @@ const allSkillsData: SkillData[] = [
       { id: 'docker-6', content: 'イメージの最適化ができる' },
       { id: 'docker-7', content: 'Docker Hubにイメージをプッシュできる' },
       { id: 'docker-8', content: 'セキュリティベストプラクティスを理解する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Docker公式「Get Started」', url: 'https://docs.docker.com/get-started/' },
     ]
   },
   {
@@ -1110,6 +1305,9 @@ const allSkillsData: SkillData[] = [
       { id: 'nginx-5', content: 'ロードバランシングを設定できる' },
       { id: 'nginx-6', content: 'キャッシュを設定できる' },
       { id: 'nginx-7', content: 'ログを設定・分析できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Nginx公式ガイド', url: 'https://nginx.org/en/docs/beginners_guide.html' },
     ]
   },
   {
@@ -1123,6 +1321,9 @@ const allSkillsData: SkillData[] = [
       { id: 'cicd-6', content: 'キャッシュを活用してビルドを高速化できる' },
       { id: 'cicd-7', content: 'ブランチ戦略に合わせたパイプラインを設計できる' },
       { id: 'cicd-8', content: 'ロールバック戦略を実装できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'GitHub Actions公式ドキュメント', url: 'https://docs.github.com/ja/actions' },
     ]
   },
   {
@@ -1135,6 +1336,9 @@ const allSkillsData: SkillData[] = [
       { id: 'cr-5', content: 'イメージの脆弱性スキャンを実行できる' },
       { id: 'cr-6', content: 'ECR/GCR/ACRを使用できる' },
       { id: 'cr-7', content: 'イメージの自動クリーンアップを設定できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Docker Hub公式ドキュメント', url: 'https://docs.docker.com/docker-hub/' },
     ]
   },
   {
@@ -1148,6 +1352,9 @@ const allSkillsData: SkillData[] = [
       { id: 'log-6', content: 'ログローテーションを設定できる' },
       { id: 'log-7', content: 'ログからアラートを設定できる' },
       { id: 'log-8', content: 'トレースIDでログを追跡できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Elastic公式ガイド', url: 'https://www.elastic.co/guide/en/welcome-to-elastic/current/getting-started-general-purpose.html' },
     ]
   },
   {
@@ -1160,6 +1367,9 @@ const allSkillsData: SkillData[] = [
       { id: 'cf-5', content: 'Workersでエッジコンピューティングができる' },
       { id: 'cf-6', content: 'WAFを設定できる' },
       { id: 'cf-7', content: 'キャッシュの無効化ができる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Cloudflare公式ガイド', url: 'https://developers.cloudflare.com/' },
     ]
   },
   {
@@ -1172,6 +1382,9 @@ const allSkillsData: SkillData[] = [
       { id: 'lb-5', content: 'スティッキーセッションを理解する' },
       { id: 'lb-6', content: 'SSL終端を設定できる' },
       { id: 'lb-7', content: 'AWS ELB/ALB/NLBを使用できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'AWS Elastic Load Balancing', url: 'https://docs.aws.amazon.com/elasticloadbalancing/' },
     ]
   },
 
@@ -1186,7 +1399,9 @@ const allSkillsData: SkillData[] = [
       { id: 'k8s-6', content: 'ResourceQuotaとLimitRangeを設定できる' },
       { id: 'k8s-7', content: 'HPA（水平オートスケーリング）を設定できる' },
       { id: 'k8s-8', content: 'kubectlを使いこなす' },
-      { id: 'k8s-9', content: 'CKA/CKAD資格を取得する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Kubernetes公式チュートリアル', url: 'https://kubernetes.io/ja/docs/tutorials/hello-minikube/' },
     ]
   },
   // AWS スキル（分割）
@@ -1200,6 +1415,9 @@ const allSkillsData: SkillData[] = [
       { id: 'aws-b-5', content: 'VPCでサブネット・ルートテーブルを設計できる' },
       { id: 'aws-b-6', content: 'セキュリティグループとNACLを設定できる' },
       { id: 'aws-b-7', content: 'CloudWatchで基本的な監視ができる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'AWSハンズオンチュートリアル', url: 'https://aws.amazon.com/jp/getting-started/hands-on/' },
     ]
   },
   {
@@ -1212,6 +1430,9 @@ const allSkillsData: SkillData[] = [
       { id: 'aws-sl-5', content: 'EventBridgeでイベント駆動設計ができる' },
       { id: 'aws-sl-6', content: 'SAM/Serverless Frameworkを使用できる' },
       { id: 'aws-sl-7', content: 'コールドスタート対策ができる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'AWS「サーバーレスワークショップ」', url: 'https://aws.amazon.com/jp/serverless-workshops/' },
     ]
   },
   {
@@ -1224,6 +1445,9 @@ const allSkillsData: SkillData[] = [
       { id: 'aws-d-5', content: 'Redshiftでデータウェアハウスを構築できる' },
       { id: 'aws-d-6', content: 'バックアップとリストアを設定できる' },
       { id: 'aws-d-7', content: 'データ暗号化を設定できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'AWS「RDS Getting Started」ガイド', url: 'https://docs.aws.amazon.com/ja_jp/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.html' },
     ]
   },
   {
@@ -1235,7 +1459,9 @@ const allSkillsData: SkillData[] = [
       { id: 'aws-c-4', content: 'ECRでイメージを管理できる' },
       { id: 'aws-c-5', content: 'App Runnerを使用できる' },
       { id: 'aws-c-6', content: 'オートスケーリングを設定できる' },
-      { id: 'aws-c-7', content: 'AWS認定資格を取得する（SAA/SAP等）' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'AWS「ECS Workshop」', url: 'https://ecsworkshop.com/' },
     ]
   },
   // GCP スキル（分割）
@@ -1248,6 +1474,9 @@ const allSkillsData: SkillData[] = [
       { id: 'gcp-b-4', content: 'VPCネットワークを設計できる' },
       { id: 'gcp-b-5', content: 'Cloud SQLを使用できる' },
       { id: 'gcp-b-6', content: 'Cloud Monitoringで監視できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'Google Cloud「Quickstart」', url: 'https://cloud.google.com/docs/get-started' },
     ]
   },
   {
@@ -1259,7 +1488,9 @@ const allSkillsData: SkillData[] = [
       { id: 'gcp-a-4', content: 'BigQueryでデータ分析ができる' },
       { id: 'gcp-a-5', content: 'Pub/Subでメッセージングができる' },
       { id: 'gcp-a-6', content: 'Cloud Buildでビルドパイプラインを構築できる' },
-      { id: 'gcp-a-7', content: 'Google Cloud認定資格を取得する' },
+    ],
+    resources: [
+      { type: 'course', title: 'Google Cloud Skills Boost 無料コース', url: 'https://www.cloudskillsboost.google/' },
     ]
   },
   // Azure スキル（分割）
@@ -1272,6 +1503,9 @@ const allSkillsData: SkillData[] = [
       { id: 'azure-b-4', content: 'Blob Storageを使用できる' },
       { id: 'azure-b-5', content: 'Virtual Networkを設計できる' },
       { id: 'azure-b-6', content: 'Azure SQL Databaseを使用できる' },
+    ],
+    resources: [
+      { type: 'course', title: 'Microsoft Learn「Azureの基礎」', url: 'https://learn.microsoft.com/ja-jp/training/paths/azure-fundamentals/' },
     ]
   },
   {
@@ -1283,7 +1517,9 @@ const allSkillsData: SkillData[] = [
       { id: 'azure-a-4', content: 'Cosmos DBを使用できる' },
       { id: 'azure-a-5', content: 'App Serviceでアプリをデプロイできる' },
       { id: 'azure-a-6', content: 'Azure Container Appsを使用できる' },
-      { id: 'azure-a-7', content: 'Azure認定資格を取得する（AZ-104等）' },
+    ],
+    resources: [
+      { type: 'course', title: 'Microsoft Learn「AZ-104」ラーニングパス', url: 'https://learn.microsoft.com/ja-jp/certifications/azure-administrator/' },
     ]
   },
   {
@@ -1297,6 +1533,9 @@ const allSkillsData: SkillData[] = [
       { id: 'ans-6', content: 'Ansible Vaultで機密情報を管理できる' },
       { id: 'ans-7', content: 'Ansible Galaxyを活用できる' },
       { id: 'ans-8', content: '冪等性を理解し実装できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Ansible公式「Getting Started」', url: 'https://docs.ansible.com/ansible/latest/getting_started/index.html' },
     ]
   },
   {
@@ -1309,6 +1548,9 @@ const allSkillsData: SkillData[] = [
       { id: 'vault-5', content: '動的シークレットを使用できる' },
       { id: 'vault-6', content: 'KubernetesとVaultを連携できる' },
       { id: 'vault-7', content: 'シークレットのローテーションを設定できる' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'HashiCorp「Vault Getting Started」', url: 'https://developer.hashicorp.com/vault/tutorials/getting-started' },
     ]
   },
   {
@@ -1322,6 +1564,9 @@ const allSkillsData: SkillData[] = [
       { id: 'mesh-6', content: 'サーキットブレーカーを設定できる' },
       { id: 'mesh-7', content: 'Kialiで可視化できる' },
       { id: 'mesh-8', content: 'カナリアデプロイを実装できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Istio公式「Getting Started」', url: 'https://istio.io/latest/docs/setup/getting-started/' },
     ]
   },
 
@@ -1335,6 +1580,9 @@ const allSkillsData: SkillData[] = [
       { id: 'helm-5', content: 'テンプレート関数を使用できる' },
       { id: 'helm-6', content: 'Helmリポジトリを管理できる' },
       { id: 'helm-7', content: 'Chart依存関係を管理できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Helm公式「Quickstart Guide」', url: 'https://helm.sh/docs/intro/quickstart/' },
     ]
   },
   {
@@ -1348,7 +1596,9 @@ const allSkillsData: SkillData[] = [
       { id: 'tf-6', content: 'リモートバックエンドを設定できる' },
       { id: 'tf-7', content: 'Terraform Cloudを使用できる' },
       { id: 'tf-8', content: 'インポートとリファクタリングができる' },
-      { id: 'tf-9', content: 'HashiCorp認定資格を取得する' },
+    ],
+    resources: [
+      { type: 'tutorial', title: 'HashiCorp「Terraform Getting Started」', url: 'https://developer.hashicorp.com/terraform/tutorials/aws-get-started' },
     ]
   },
   {
@@ -1362,6 +1612,9 @@ const allSkillsData: SkillData[] = [
       { id: 'mon-6', content: 'APM（Application Performance Monitoring）を導入できる' },
       { id: 'mon-7', content: 'SLI/SLO/SLAを定義できる' },
       { id: 'mon-8', content: 'オンコール体制を設計できる' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Prometheus公式「Getting started」', url: 'https://prometheus.io/docs/prometheus/latest/getting_started/' },
     ]
   },
   {
@@ -1375,6 +1628,9 @@ const allSkillsData: SkillData[] = [
       { id: 'argo-6', content: 'マルチクラスター管理ができる' },
       { id: 'argo-7', content: 'RBAC を設定できる' },
       { id: 'argo-8', content: 'App of Appsパターンを理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'Argo CD公式「Getting Started」', url: 'https://argo-cd.readthedocs.io/en/stable/getting_started/' },
     ]
   },
   {
@@ -1389,6 +1645,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sre-7', content: 'カオスエンジニアリングを実践できる' },
       { id: 'sre-8', content: 'キャパシティプランニングができる' },
       { id: 'sre-9', content: 'オンコール体制を設計・運用できる' },
+    ],
+    resources: [
+      { type: 'book', title: 'SRE サイトリライアビリティエンジニアリング（Google著）' },
     ]
   },
   {
@@ -1403,6 +1662,9 @@ const allSkillsData: SkillData[] = [
       { id: 'sec-inf-7', content: 'コンプライアンス要件を理解する' },
       { id: 'sec-inf-8', content: 'セキュリティスキャン（Trivy等）を実行できる' },
       { id: 'sec-inf-9', content: 'ゼロトラストアーキテクチャを理解する' },
+    ],
+    resources: [
+      { type: 'documentation', title: 'AWS「Well-Architected Framework セキュリティの柱」', url: 'https://docs.aws.amazon.com/ja_jp/wellarchitected/latest/security-pillar/welcome.html' },
     ]
   },
 ];

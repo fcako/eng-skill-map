@@ -388,9 +388,10 @@ export function SkillTreeCanvas() {
           </h1>
         </div>
 
-        {/* SVG for connection lines only */}
+        {/* SVG for connection lines only - behind skill nodes */}
         <svg
-          className="absolute inset-0 pointer-events-none z-10"
+          className="absolute inset-0 pointer-events-none"
+          style={{ zIndex: 1 }}
           width={canvasSize.width}
           height={canvasSize.height}
         >
