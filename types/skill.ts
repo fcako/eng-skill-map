@@ -2,6 +2,16 @@ export type SkillCategory = 'frontend' | 'backend' | 'infrastructure' | 'devops'
 
 export type SkillTier = 1 | 2 | 3 | 4 | 5;
 
+// リソースの種類
+export type ResourceType = 'book' | 'tutorial' | 'documentation' | 'course' | 'video';
+
+// 学習リソース
+export interface Resource {
+  type: ResourceType;
+  title: string;
+  url?: string;  // オプション（書籍はURLなしも可）
+}
+
 export interface LearningItem {
   id: string;
   content: string;
@@ -21,6 +31,7 @@ export interface Skill {
   connections: string[];
   pointValue: number;
   learningItems: LearningItem[];
+  resources?: Resource[];
 }
 
 export interface SkillTreeState {
